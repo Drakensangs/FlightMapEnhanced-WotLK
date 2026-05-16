@@ -1,0 +1,11 @@
+## Interface: 30300
+## Title: FlightMap v3.4
+## Notes: Adds a tooltip to the world map showing flightpaths into and out of regions, and region level ranges.
+Author: Original addon: Dhask; Enhanced version: Drakensangs
+## SavedVariables: FlightMap
+## SavedVariablesPerCharacter: FlightMapChar
+## OptionalDeps: myAddOns
+FlightMapUtil.lua
+FlightMap.xml
+FlightMapTimes.xml
+FlightMapTaxi.xml
