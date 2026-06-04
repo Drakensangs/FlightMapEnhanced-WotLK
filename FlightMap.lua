@@ -1129,6 +1129,9 @@ function FlightMapOptionsFrame_OnLoad(self)
     local fmContinentBox = nil;
     local fmClassBox = nil;
 
+    -- Boxes that need to be greyed when "Show destinations" is off
+    local fmDestChildBoxes = {};
+
     for optid = 1, #FLIGHTMAP_OPTIONS do
         local option = FLIGHTMAP_OPTIONS[optid];
         if option then
@@ -1165,6 +1168,20 @@ function FlightMapOptionsFrame_OnLoad(self)
                             GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
                     end
                 end
+                -- Grey out "Show destinations" children (multi-hop, times, costs)
+                if option.option == "showDestinations" then
+                    for _, cb in pairs(fmDestChildBoxes) do
+                        if value then
+                            cb:Enable();
+                            getglobal(cb:GetName() .. "Text"):SetTextColor(
+                                NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+                        else
+                            cb:Disable();
+                            getglobal(cb:GetName() .. "Text"):SetTextColor(
+                                GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+                        end
+                    end
+                end
             end
             box.GetValue = function() return (FlightMapChar.Opts[option.option] and "1" or "0") end
 
@@ -1181,11 +1198,18 @@ function FlightMapOptionsFrame_OnLoad(self)
 
             -- Store for later use
             option.control = box;
+            -- Register boxes that are children of "Show destinations" (options 6, 7, 8)
+            if optid == 6 or optid == 7 or optid == 8 then
+                table.insert(fmDestChildBoxes, box);
+            end
             options["option" .. optid] = {
                 text = option.label,
                 tooltip = option.tooltip,
                 default = nil,
             };
+            -- Apply yellow (NORMAL_FONT_COLOR) to the checkbox label text
+            getglobal(box:GetName() .. "Text"):SetTextColor(
+                NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 
             if optid == 2 then
                 optionCount = optionCount + 1;
@@ -1204,6 +1228,8 @@ function FlightMapOptionsFrame_OnLoad(self)
                         13, 30 - 30 * optionCount);
                 getglobal(fmContinentBox:GetName() .. "Text"):SetText(
                     FLIGHTMAP_OPT_SHOW_FM_CONTINENT or "Flight master continent icons");
+                getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
                 options["fmContinent"] = {
                     text = FLIGHTMAP_OPT_SHOW_FM_CONTINENT or "Flight master continent icons",
                     tooltip = FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP or
@@ -1227,6 +1253,8 @@ function FlightMapOptionsFrame_OnLoad(self)
                         13, 30 - 30 * optionCount);
                 getglobal(fmClassBox:GetName() .. "Text"):SetText(
                     FLIGHTMAP_OPT_SHOW_FM_CLASS or "Class specific flight master icons");
+                getglobal(fmClassBox:GetName() .. "Text"):SetTextColor(
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
                 options["fmClass"] = {
                     text = FLIGHTMAP_OPT_SHOW_FM_CLASS or "Class specific flight master icons",
                     tooltip = FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP or
@@ -1250,6 +1278,8 @@ function FlightMapOptionsFrame_OnLoad(self)
                         13, 30 - 30 * optionCount);
                 getglobal(fmTooltipBox:GetName() .. "Text"):SetText(
                     FLIGHTMAP_OPT_SHOW_FM_TOOLTIP or "Flight master tooltip");
+                getglobal(fmTooltipBox:GetName() .. "Text"):SetTextColor(
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
                 options["fmTooltip"] = {
                     text = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP or "Flight master tooltip",
                     tooltip = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP or
@@ -1261,6 +1291,8 @@ function FlightMapOptionsFrame_OnLoad(self)
     end
 
     optionCount = optionCount + 1;
+    local zoneLevelsBox = nil;  -- forward declaration so zoneTooltipBox can reference it
+
     local zoneTooltipBox = CreateFrame("CheckButton", base .. "ZoneTooltip",
             parent, "InterfaceOptionsCheckButtonTemplate");
     zoneTooltipBox.type = CONTROLTYPE_CHECKBOX;
@@ -1270,6 +1302,18 @@ function FlightMapOptionsFrame_OnLoad(self)
         FlightMapChar.Opts.showZoneTooltip = value
         lFM_CurrentZone = nil
         lFM_CurrentArea = nil
+        -- Grey out / enable "Show zone level ranges" child
+        if zoneLevelsBox then
+            if value then
+                zoneLevelsBox:Enable();
+                getglobal(zoneLevelsBox:GetName() .. "Text"):SetTextColor(
+                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+            else
+                zoneLevelsBox:Disable();
+                getglobal(zoneLevelsBox:GetName() .. "Text"):SetTextColor(
+                    GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+            end
+        end
     end
     zoneTooltipBox.GetValue = function() 
         return (FlightMapChar.Opts.showZoneTooltip and "1" or "0") 
@@ -1277,6 +1321,8 @@ function FlightMapOptionsFrame_OnLoad(self)
     zoneTooltipBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
             -2, 30 - 30 * optionCount);
     getglobal(zoneTooltipBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP);
+    getglobal(zoneTooltipBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
     options["zoneTooltip"] = {
         text = FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP,
         tooltip = FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP,
@@ -1284,7 +1330,7 @@ function FlightMapOptionsFrame_OnLoad(self)
     };
 
     optionCount = optionCount + 1;
-    local zoneLevelsBox = CreateFrame("CheckButton", base .. "ZoneLevels",
+    zoneLevelsBox = CreateFrame("CheckButton", base .. "ZoneLevels",
             parent, "InterfaceOptionsCheckButtonTemplate");
     zoneLevelsBox.type = CONTROLTYPE_CHECKBOX;
     zoneLevelsBox.label = "zoneLevels";
@@ -1298,9 +1344,12 @@ function FlightMapOptionsFrame_OnLoad(self)
     zoneLevelsBox.GetValue = function() 
         return (FlightMapChar.Opts.showZoneLevels and "1" or "0") 
     end
+    -- Indent as child of zoneTooltipBox (left = 13, same as Flight master children)
     zoneLevelsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
-            -2, 30 - 30 * optionCount);
+            13, 30 - 30 * optionCount);
     getglobal(zoneLevelsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_ZONE_LEVELS);
+    getglobal(zoneLevelsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
     options["zoneLevels"] = {
         text = FLIGHTMAP_OPT_SHOW_ZONE_LEVELS,
         tooltip = FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP,
@@ -1322,16 +1371,22 @@ function FlightMapOptionsFrame_OnLoad(self)
     getglobal(fontSizeSlider:GetName() .. "Low"):SetText("8");
     getglobal(fontSizeSlider:GetName() .. "High"):SetText("20");
     getglobal(fontSizeSlider:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE .. ": 12");
-    
+    getglobal(fontSizeSlider:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+
     fontSizeSlider:SetScript("OnValueChanged", function(self, value)
         value = math.floor(value + 0.5);
         FlightMapChar.Opts.tooltipFontSize = value;
         getglobal(self:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE .. ": " .. value);
+        getglobal(self:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
     end);
-    
+
     fontSizeSlider:SetScript("OnShow", function(self)
         self:SetValue(FlightMapChar.Opts.tooltipFontSize or 12);
         getglobal(self:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE .. ": " .. (FlightMapChar.Opts.tooltipFontSize or 12));
+        getglobal(self:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
     end);
 
     fontSizeSlider:SetScript("OnEnter", function(self)
@@ -1356,6 +1411,8 @@ function FlightMapOptionsFrame_OnLoad(self)
 	maxLinesSlider:SetScript("OnShow", function(self)
 	    self:SetValue(FlightMapChar.Opts.maxTooltipLines or 20);
 		getglobal(self:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_MAX_TOOLTIP_LINES .. ": " .. (FlightMapChar.Opts.maxTooltipLines or 20));
+		getglobal(self:GetName() .. "Text"):SetTextColor(
+		    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 	end);
     
     maxLinesSlider:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
@@ -1364,6 +1421,8 @@ function FlightMapOptionsFrame_OnLoad(self)
     getglobal(maxLinesSlider:GetName() .. "Low"):SetText("20");
     getglobal(maxLinesSlider:GetName() .. "High"):SetText("80");
     getglobal(maxLinesSlider:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_MAX_TOOLTIP_LINES .. ": 20");
+    getglobal(maxLinesSlider:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
     
     maxLinesSlider:Show();
     
@@ -1371,6 +1430,8 @@ function FlightMapOptionsFrame_OnLoad(self)
         value = math.floor(value + 0.5);
         FlightMapChar.Opts.maxTooltipLines = value;
         getglobal(self:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_MAX_TOOLTIP_LINES .. ": " .. value);
+        getglobal(self:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         lFM_CurrentZone = nil;
         lFM_CurrentArea = nil;
     end);
@@ -1430,10 +1491,14 @@ function FlightMapOptionsFrame_OnLoad(self)
         fontSizeSlider:SetValue(FlightMapChar.Opts.tooltipFontSize or 12);
         getglobal(fontSizeSlider:GetName() .. "Text"):SetText(
             FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE .. ": " .. (FlightMapChar.Opts.tooltipFontSize or 12));
+        getglobal(fontSizeSlider:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 
         maxLinesSlider:SetValue(FlightMapChar.Opts.maxTooltipLines or 20);
         getglobal(maxLinesSlider:GetName() .. "Text"):SetText(
             FLIGHTMAP_OPT_MAX_TOOLTIP_LINES .. ": " .. (FlightMapChar.Opts.maxTooltipLines or 20));
+        getglobal(maxLinesSlider:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 
         local poisEnabled = FlightMapChar.Opts.showPOIs;
         local function applyGrayout(cb, enabled)
@@ -1450,5 +1515,16 @@ function FlightMapOptionsFrame_OnLoad(self)
         if fmContinentBox then applyGrayout(fmContinentBox, poisEnabled) end
         if fmClassBox     then applyGrayout(fmClassBox,     poisEnabled) end
         if fmTooltipBox   then applyGrayout(fmTooltipBox,   poisEnabled) end
+
+        -- Grey out "Show destinations" children (multi-hop, times, costs)
+        local destEnabled = FlightMapChar.Opts.showDestinations;
+        for _, cb in pairs(fmDestChildBoxes) do
+            applyGrayout(cb, destEnabled);
+        end
+
+        -- Grey out "Show zone level ranges" if zone tooltip is off
+        if zoneLevelsBox then
+            applyGrayout(zoneLevelsBox, FlightMapChar.Opts.showZoneTooltip);
+        end
     end);
 end
