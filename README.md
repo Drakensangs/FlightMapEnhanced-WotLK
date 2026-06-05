@@ -3,6 +3,7 @@
 Dhask's FlightMap for World of Warcraft Wrath of the Lich King 3.3.5a with the following enhancements/changes/additions:
 
  - Complete multi-hop flight data for all continents and both factions.
+ - [**awesome_wotlk**](https://github.com/noname08662/awesome_wotlk) support. If the awesome_wotlk mod & its addon are installed, a new option will be available: "Notify: taskbar icon". When alt-tabbed, the first option will cause the WoW icon on the taskbar to flash when the flight path destination has been reached.
  - Restored flight master icon tooltips and added option to disable the tooltip.
  - Adjusted positions of the vast majority of flight master icons to be more accurate.
  - Option to hide/show class specific flight master icons (for example: Acherus: The Ebon Hold). Flight paths to the hidden class flight masters will also be hidden in flight master tooltips.
