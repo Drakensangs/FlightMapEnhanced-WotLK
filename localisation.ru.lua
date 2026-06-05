@@ -114,6 +114,8 @@ if (GetLocale() == "ruRU") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Показать информацию о полетах для зоны, на которую наведен курсор, в левом нижнем углу карты мира.";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Показать диапазоны уровней зоны";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Отобразить рекомендуемый диапазон уровней для каждой зоны во всплывающей подсказке зоны.";
+    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Уведомить: значок на панели задач";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Размер шрифта всплывающей подсказки";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Регулирует размер шрифта всплывающей подсказки зоны.";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Максимальное количество строк во всплывающей подсказке";

@@ -24,6 +24,7 @@ FLIGHTMAP_DEFAULT_OPTS = {
      ["showClassPOIs"]           = true,
      ["showFlightMasterTooltip"] = true,
      ["showZoneLevels"]     = true,
+     ["notifyTaskbar"]      = true,
      ["tooltipFontSize"]    = 9,
      ["maxTooltipLines"]    = 60,
      ["timerPos"]           = { point = "TOP", x = 0, y = -11 },

@@ -112,6 +112,8 @@ if (GetLocale() == "esES") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Muestra información de vuelo para la zona sobre la que se encuentra el cursor en la esquina inferior izquierda del mapa mundial.";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Mostrar rangos de nivel de zona";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Muestra el rango de nivel recomendado para cada zona en la información sobre la zona.";
+    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Notificar: icono de la barra de tareas";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Tamaño de fuente de la información sobre la zona";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Ajusta el tamaño de fuente de la información sobre la zona.";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Número máximo de líneas de la información sobre la zona";

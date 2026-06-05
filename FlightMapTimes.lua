@@ -228,6 +228,16 @@ function FlightMapTimes_OnUpdate(self)
     if not UnitOnTaxi("player") then
         local alpha = self:GetAlpha() - FLIGHTMAPTIMES_FADESTEP;
         local flash = FlightMapTimesFlash:GetAlpha();
+        -- Fire one-shot OS notification on first frame after landing
+        if self.started and not self.notified then
+            self.notified = true;
+            if FlightMapChar.Opts.notifyTaskbar
+            and IsAddOnLoaded and IsAddOnLoaded("AwesomeCVar")
+            and FlashWindow and IsWindowFocused
+            and not IsWindowFocused() then
+                FlashWindow();
+            end
+        end
         -- Flash the overlay in
         if flash < 1 then
             flash = flash + FLIGHTMAPTIMES_FLASHSTEP;
@@ -243,6 +253,7 @@ function FlightMapTimes_OnUpdate(self)
             FlightMapTimesFlash:SetAlpha(0);
         end
     else
+        self.started = true;
         local label = self.destination .. ": ";
         local now = GetTime();
         -- If the time was too short, wipe it out and save a new one!
@@ -288,6 +299,8 @@ function FlightMapTimes_BeginFlight(duration, destination)
     FlightMapTimesFrame.destination = destination;
     FlightMapTimesFrame.duration = duration;
     FlightMapTimesFrame.startTime = GetTime();
+    FlightMapTimesFrame.started = false;
+    FlightMapTimesFrame.notified = false;
     if FlightMapTimesFrame.duration ~= nil then
         FlightMapTimesFrame.endTime = FlightMapTimesFrame.startTime
                                     + FlightMapTimesFrame.duration;

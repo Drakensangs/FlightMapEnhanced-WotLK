@@ -113,6 +113,8 @@ if (GetLocale() == "zhCN") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "在世界地图左下角显示悬停区域的飞行信息。";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "显示区域空域范围";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "在区域工具提示中显示每个区域的推荐空域范围。";
+	FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "通知：任务栏图标";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "工具提示字体大小";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "调整区域工具提示的字体大小。";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "工具提示最大行数";

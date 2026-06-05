@@ -116,6 +116,8 @@ if (GetLocale() == "frFR") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Afficher les informations de vol pour la zone survolée dans le coin inférieur gauche de la carte du monde.";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Afficher les plages de niveaux de la zone";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Afficher la plage de niveaux recommandée pour chaque zone dans l'infobulle de la zone.";
+    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Notification: icône de la barre des tâches";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Taille de la police de l'infobulle";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Ajuste la taille de la police de l'infobulle de la zone.";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Nombre maximal de lignes dans l'infobulle"; 

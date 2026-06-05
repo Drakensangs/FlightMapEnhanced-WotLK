@@ -1357,6 +1357,46 @@ function FlightMapOptionsFrame_OnLoad(self)
     };
 
     optionCount = optionCount + 1;
+    local awesomeSeparator = parent:CreateFontString(
+        base .. "AwesomeSeparator", "ARTWORK", "GameFontNormalSmall");
+    awesomeSeparator:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
+        18, 16 - 30 * optionCount);
+    awesomeSeparator:SetText(FLIGHTMAP_OPT_AWESOME_SEPARATOR or "awesome_wotlk:");
+    awesomeSeparator:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+
+    optionCount = optionCount + 1;
+    local awesomeLoaded = IsAddOnLoaded and IsAddOnLoaded("AwesomeCVar");
+    local notifyTaskbarBox = CreateFrame("CheckButton", base .. "NotifyTaskbar",
+            parent, "InterfaceOptionsCheckButtonTemplate");
+    notifyTaskbarBox.type = CONTROLTYPE_CHECKBOX;
+    notifyTaskbarBox.label = "notifyTaskbar";
+    notifyTaskbarBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.notifyTaskbar = value;
+    end
+    notifyTaskbarBox.GetValue = function()
+        return (FlightMapChar.Opts.notifyTaskbar and "1" or "0")
+    end
+    notifyTaskbarBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
+        -2, 30 - 30 * optionCount);
+    getglobal(notifyTaskbarBox:GetName() .. "Text"):SetText(
+        FLIGHTMAP_OPT_NOTIFY_TASKBAR or "Notify: taskbar icon");
+    if awesomeLoaded then
+        getglobal(notifyTaskbarBox:GetName() .. "Text"):SetTextColor(
+            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    else
+        notifyTaskbarBox:Disable();
+        getglobal(notifyTaskbarBox:GetName() .. "Text"):SetTextColor(
+            GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+    end
+    options["notifyTaskbar"] = {
+        text    = FLIGHTMAP_OPT_NOTIFY_TASKBAR or "Notify: taskbar icon",
+        tooltip = FLIGHTMAP_OPT_NOTIFY_TASKBAR_TIP,
+        default = nil,
+    };
+    BlizzardOptionsPanel_RegisterControl(notifyTaskbarBox, panel);
+
+    optionCount = optionCount + 1;
     local fontSizeSlider = CreateFrame("Slider", base .. "FontSize",
             parent, "OptionsSliderTemplate");
     fontSizeSlider:SetWidth(200);
@@ -1525,6 +1565,12 @@ function FlightMapOptionsFrame_OnLoad(self)
         -- Grey out "Show zone level ranges" if zone tooltip is off
         if zoneLevelsBox then
             applyGrayout(zoneLevelsBox, FlightMapChar.Opts.showZoneTooltip);
+        end
+
+        -- Grey out "Notify: taskbar icon" if AwesomeCVar is not loaded
+        if notifyTaskbarBox then
+            applyGrayout(notifyTaskbarBox,
+                IsAddOnLoaded and IsAddOnLoaded("AwesomeCVar"));
         end
     end);
 end

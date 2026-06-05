@@ -113,6 +113,8 @@ if (GetLocale() == "deDE") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Fluginformationen für die Zone, über die der Mauszeiger bewegt wird, in der unteren linken Ecke der Weltkarte anzeigen.";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Zonen-Levelbereiche anzeigen";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Empfohlenen Levelbereich für jede Zone im Zonen-Tooltip anzeigen.";
+    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Benachrichtigung: Taskleistensymbol";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Schriftgröße des Tooltips";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Schriftgröße des Zonen-Tooltips anpassen.";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Maximale Anzahl an Tooltip-Zeilen";

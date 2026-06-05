@@ -112,6 +112,8 @@ if (GetLocale() == "koKR") then
     FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "마우스를 올린 구역의 비행 정보를 세계 지도 왼쪽 하단에 표시합니다.";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "구역 레벨 범위 표시";
     FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "구역 툴팁에 각 구역의 권장 레벨 범위를 표시합니다.";
+    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "알림: 작업 표시줄 아이콘";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "툴팁 글꼴 크기";
     FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "구역 툴팁의 글꼴 크기를 조정합니다.";
     FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "툴팁 최대 줄 수";
