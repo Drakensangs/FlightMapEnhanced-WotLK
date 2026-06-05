@@ -23,8 +23,8 @@ Enhanced version: Drakensangs
 
 ## 📸 **Screenshots**
 
-<img width="951" height="765" alt="fmopts1" src="https://github.com/user-attachments/assets/8f2fe1f7-d9b6-40e2-bb2b-a6dc8cfb5cc6" />
-<img width="962" height="784" alt="fmopts2" src="https://github.com/user-attachments/assets/7965f88b-2f1f-4335-b2c4-8fa6ffb5f462" />
+<img width="932" height="759" alt="fmopts1" src="https://github.com/user-attachments/assets/127a8d2f-4d79-4d2c-83de-de919239c34a" />
+<img width="976" height="776" alt="fmopts2" src="https://github.com/user-attachments/assets/e94c377d-2fbf-4c69-87a6-621dc1e95830" />
 <img width="1911" height="1438" alt="Untitled8" src="https://github.com/user-attachments/assets/5ad46854-333a-4f30-b46c-452c16d633bd" />
 <img width="1913" height="1437" alt="Untitled5" src="https://github.com/user-attachments/assets/3c0fddc1-78b1-4507-95d9-a658ab4189d0" />
 <img width="1910" height="1436" alt="Untitled4" src="https://github.com/user-attachments/assets/23333f17-e9ec-4e6c-9394-c6c0c5243058" />
