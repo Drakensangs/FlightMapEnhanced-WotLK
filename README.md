@@ -13,6 +13,7 @@ Dhask's FlightMap for World of Warcraft Wrath of the Lich King 3.3.5a with the f
  - Restored level range on the zone tooltip and added option to disable it.
  - Faction based color coded zone names on the zone tooltip.
  - The addon now only writes flight paths with a difference of over 1 second to the savedvariable. Previously, every flight path would be written.
+ - Toggleable minimap button.
  - [**Magnify-WotLK**](https://github.com/rissole/Magnify-WotLK) compatibility.
 
 ## 👨‍💻 **Authors**
