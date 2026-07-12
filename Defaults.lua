@@ -28,6 +28,9 @@ FLIGHTMAP_DEFAULT_OPTS = {
      ["tooltipFontSize"]    = 9,
      ["maxTooltipLines"]    = 60,
      ["timerPos"]           = { point = "TOP", x = 0, y = -11 },
+     ["showMinimapButton"]  = true,
+     ["minimapButtonAngle"] = 225,
+     ["lockFlightTimes"]    = false,
 };
 
 -- Sub-zones

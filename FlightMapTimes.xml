@@ -122,8 +122,10 @@
         FlightMapTimes_OnDragStop(self);
       </OnMouseUp>
       <OnEnter>
-        GameTooltip_AddNewbieTip(self, FLIGHTMAP_NAME, 1.0, 1.0, 1.0,
-            FLIGHTMAP_TIMER_HELP, 1);
+        GameTooltip_SetDefaultAnchor(GameTooltip, self);
+        GameTooltip:SetText(FLIGHTMAP_NAME, 1.0, 1.0, 1.0);
+        GameTooltip:AddLine(FLIGHTMAP_TIMER_HELP, 1, 1, 1, true);
+        GameTooltip:Show();
       </OnEnter>
       <OnLeave>
         GameTooltip:Hide();

@@ -1,130 +1,95 @@
--- Chinese translations
--- By Tobar at CN Realm
+-- Simplified Chinese localisation
+
 if (GetLocale() == "zhCN") then
-    BINDING_HEADER_FLIGHTMAP = "FlightMap";       -- TODO translate
-    BINDING_NAME_FLIGHTMAP   = "Show flight map"; -- TODO translate
 
-    FLIGHTMAP_NAME          = "FlightMap";
-    FLIGHTMAP_DESCRIPTION   = "在世界地图上显示飞行路线";
-    FLIGHTMAP_ALLIANCE      = "联盟";
-    FLIGHTMAP_HORDE         = "部落";
-    FLIGHTMAP_CONTESTED     = "争夺中";
+BINDING_HEADER_FLIGHTMAP = "飞行地图";
+BINDING_NAME_FLIGHTMAP   = "显示飞行地图";
 
-    -- General strings
-    FLIGHTMAP_TIMING        = "(计时)";
-    FLIGHTMAP_LEVELS        = "|cff00ff00等级范围: %d - %d|r";
-    FLIGHTMAP_NOFLIGHTS     = "没有已知的飞行点!";
-    FLIGHTMAP_NOT_KNOWN     = "(未知)";
-    FLIGHTMAP_NO_COST       = "免费";
-    FLIGHTMAP_MONEY_GOLD    = "金";
-    FLIGHTMAP_MONEY_SILVER  = "银";
-    FLIGHTMAP_MONEY_COPPER  = "铜";
-    FLIGHTMAP_FLIGHTTIME    = "Flight time: ";     -- TODO translate
-    FLIGHTMAP_QUICKEST      = "Fastest route: ";   -- TODO translate
-    FLIGHTMAP_TOTAL_TIME    = "Total time: ";      -- TODO translate
-    FLIGHTMAP_VIA           = "Via ";              -- TODO translate
-    FLIGHTMAP_CONFIRM       = "Are you sure you wish to fly to %s?%s";
-    FLIGHTMAP_CONFIRM_TIME  = " This flight will take ";
+FLIGHTMAP_NAME          = "飞行地图";
+FLIGHTMAP_DESCRIPTION   = "在世界地图上显示飞行路线";
+FLIGHTMAP_ALLIANCE      = "联盟";
+FLIGHTMAP_HORDE         = "部落";
+FLIGHTMAP_CONTESTED     = "争夺中";
+FLIGHTMAP_NEUTRAL       = "中立";
 
-    -- Command strings
-    FLIGHTMAP_RESET         = "reset";             -- TODO translate
-    FLIGHTMAP_SHOWMAP       = "open";              -- TODO translate
-    FLIGHTMAP_LOCKTIMES     = "lock";              -- TODO translate
-    FLIGHTMAP_GETHELP       = "help";              -- TODO translate
+-- General strings
+FLIGHTMAP_TIMING        = "(计时)";
+FLIGHTMAP_LEVELS        = "等级范围: %d - %d";
+FLIGHTMAP_NOFLIGHTS     = "没有已知的飞行点!";
+FLIGHTMAP_NOT_KNOWN     = "(未知)";
+FLIGHTMAP_NO_COST       = "免费";
+FLIGHTMAP_MONEY_GOLD    = "金";
+FLIGHTMAP_MONEY_SILVER  = "银";
+FLIGHTMAP_MONEY_COPPER  = "铜";
+FLIGHTMAP_FLIGHTTIME    = "飞行时间: ";
+FLIGHTMAP_QUICKEST      = "最快路线";
+FLIGHTMAP_TOTAL_TIME    = "总计时间";
+FLIGHTMAP_VIA           = "经由 ";
+FLIGHTMAP_CONFIRM       = "你确定要飞往 %s 吗?%s";
+FLIGHTMAP_CONFIRM_TIME  = " 此次飞行将耗时 ";
 
-    -- Help text                   TODO translate
-    FLIGHTMAP_TIMER_HELP    =
-        "Hold down SHIFT and drag the timer bar to reposition.";
-    FLIGHTMAP_SUBCOMMANDS   = {
-        [FLIGHTMAP_RESET]       = "Reset timer bar position",
-        [FLIGHTMAP_SHOWMAP]     = "Open flight map window",
-        [FLIGHTMAP_GETHELP]     = "Show this text",
-    };
+-- Command strings
+FLIGHTMAP_RESET         = "重置";
+FLIGHTMAP_SHOWMAP       = "打开";
+FLIGHTMAP_LOCKTIMES     = "锁定";
+FLIGHTMAP_TIMER_HELP    = "按住 SHIFT 键并拖动计时条以重新定位。";
 
-    -- Locked/unlocked status           TODO translate
-    FLIGHTMAP_TIMESLOCKED   = {
-        [true] = "Flight times will no longer be recorded.",
-        [false] = "Flight times will now be recorded.",
-    };
+-- Option strings
+FLIGHTMAP_OPTIONS_CLOSE = "关闭";
+FLIGHTMAP_OPTIONS_TITLE = "飞行地图";
 
-    -- Option strings
-    FLIGHTMAP_OPTIONS_CLOSE = "Close";             -- TODO translate
-    FLIGHTMAP_OPTIONS_TITLE = "FlightMap Options"; -- TODO translate
-    FLIGHTMAP_OPTIONS = {};
-    FLIGHTMAP_OPTIONS[1] = {   -- Option 1: flight path lines
-        label = "飞行路线",
-        option = "showPaths",
-        tooltip = "在世界地图上画出飞行路线.",
-    };
-    FLIGHTMAP_OPTIONS[2] = {   -- Option 2: extra POI buttons
-        label = "飞行管理员图标",
-        option = "showPOIs",
-        tooltip = "在地图上显示飞行管理员的坐标.",
-    };
-    FLIGHTMAP_OPTIONS[3] = {   -- Option 3: Unknown masters
-        label = "显示所有信息",
-        option = "showAllInfo",
-        tooltip = "显示所有数据, 包括还未访问的飞行点.",
-    };
-    FLIGHTMAP_OPTIONS[4] = {   -- Option 5: flight timers
-        label = "飞行计时器",
-        option = "useTimer",
-        tooltip = "启用/禁用 飞行进度监视器.",
-    };
+FLIGHTMAP_OPT_SHOW_PATHS                = "飞行路线";
+FLIGHTMAP_OPT_SHOW_PATHS_TIP            = "在世界地图上绘制飞行路线。";
+FLIGHTMAP_OPT_SHOW_POIS                 = "飞行管理员图标";
+FLIGHTMAP_OPT_SHOW_POIS_TIP             = "在世界地图上显示飞行管理员的额外图标。";
+FLIGHTMAP_OPT_SHOW_ALL_INFO             = "显示所有信息";
+FLIGHTMAP_OPT_SHOW_ALL_INFO_TIP         = "显示所有数据，包括未访问的飞行管理员。";
+FLIGHTMAP_OPT_USE_TIMER                 = "飞行计时器";
+FLIGHTMAP_OPT_USE_TIMER_TIP             = "启用/禁用飞行时长指示器。";
+FLIGHTMAP_OPT_SHOW_DESTINATIONS         = "显示目的地";
+FLIGHTMAP_OPT_SHOW_DESTINATIONS_TIP     = "在提示框中显示飞行目的地。";
+FLIGHTMAP_OPT_SHOW_MULTI_HOP            = "包括中转飞行";
+FLIGHTMAP_OPT_SHOW_MULTI_HOP_TIP        = "在提示框中显示中转飞行目的地。";
+FLIGHTMAP_OPT_SHOW_TIMES                = "显示飞行时间";
+FLIGHTMAP_OPT_SHOW_TIMES_TIP            = "在提示框中显示飞行时间。";
+FLIGHTMAP_OPT_SHOW_COSTS                = "显示飞行费用";
+FLIGHTMAP_OPT_SHOW_COSTS_TIP            = "在提示框中显示飞行费用。";
+FLIGHTMAP_OPT_FULL_TAXI_MAP             = "增强飞行窗口";
+FLIGHTMAP_OPT_FULL_TAXI_MAP_TIP         = "在飞行选择窗口中显示飞行网络。";
+FLIGHTMAP_OPT_CONFIRM_FLIGHTS           = "确认飞行";
+FLIGHTMAP_OPT_CONFIRM_FLIGHTS_TIP       = "乘坐飞行前请求确认。";
+FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP         = "显示区域提示框";
+FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "在世界地图左下角显示鼠标悬停区域的飞行信息。";
+FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "显示区域等级范围";
+FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "在区域提示框中显示每个区域的推荐等级范围。";
+FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "通知：任务栏图标";
+FLIGHTMAP_OPT_NOTIFY_TASKBAR_TIP        = "降落时闪烁 WoW 任务栏图标。需要 awesome_wotlk (AwesomeCVar)。";
+FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "提示框字体大小";
+FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "调整区域提示框的字体大小。";
+FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "提示框最大行数";
+FLIGHTMAP_OPT_MAX_TOOLTIP_LINES_TIP     = "区域提示框中显示的最大行数。";
+FLIGHTMAP_OPT_SHOW_FM_CONTINENT         = "飞行管理员大陆图标";
+FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP     = "在大陆地图上显示飞行管理员图标。";
+FLIGHTMAP_OPT_SHOW_FM_CLASS             = "职业专属飞行管理员图标";
+FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP         = "显示职业专属飞行管理员图标。";
+FLIGHTMAP_OPT_SHOW_FM_TOOLTIP           = "飞行管理员提示框";
+FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP       = "鼠标悬停在飞行管理员图标上时显示包含飞行信息的提示框。";
+FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES         = "锁定飞行时间";
+FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES_TIP     = "阻止插件将新的或不同的飞行数据写入 savedvariables。";
 
-    FLIGHTMAP_OPTIONS[5] = {   -- Option 6: Show flight destinations
-        label = "Show destinations",
-        option = "showDestinations",
-        tooltip = "Show flight destinations on tooltips",
-        children = {7, 8, 9},
-    };
-    FLIGHTMAP_OPTIONS[6] = {   -- Option 7: Show multi-hop destinations
-        label = "Including multi-hop",
-        option = "showMultiHop",
-        tooltip = "Show multi-hop destinations on tooltips",
-    };
-    FLIGHTMAP_OPTIONS[7] = {   -- Option 8: Show flight times
-        label = "显示飞行时间",
-        option = "showTimes",
-        tooltip = "在提示框中显示飞行时间.",
-    };
-    FLIGHTMAP_OPTIONS[8] = {   -- Option 5: Show flight costs
-        label = "显示飞行费用",
-        option = "showCosts",
-        tooltip = "在提示框中显示飞行费用.",
-    };
-    FLIGHTMAP_OPTIONS[9] = {   -- Option 10: Taxi window extras
-        label = "Full flight map",
-        option = "fullTaxiMap",
-        tooltip = "Show unreachable nodes on the taxi window map",
-    };
-    FLIGHTMAP_OPTIONS[10] = {   -- Option 11: Confirm flight destinations
-        label = "Confirm flights",
-        option = "confirmFlights",
-        tooltip = "Prompt for confirmation before taking a flight",
-    };
+-- Minimap button tooltip strings
+FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON       = "小地图按钮";
+FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON_TIP   = "在小地图上显示 FlightMap 按钮。";
+FLIGHTMAP_MINIMAP_TIP1                  = "左键单击以打开 FlightMap 选项。";
+FLIGHTMAP_MINIMAP_TIP2                  = "按住右键以移动小地图按钮。";
+FLIGHTMAP_MINIMAP_TIP3                  = "Ctrl+左键单击以打开飞行地图。";
+FLIGHTMAP_MINIMAP_TIP4                  = "Shift+左键单击以重置计时条位置。";
 
-    -- These constants determine how "Town, Zone" strings look.
-    -- SEP_STRING is what separates Town from Zone.  SEP_POSTAMBLE
-    -- is anything that is after Zone.
-    FLIGHTMAP_SEP_STRING    = "，";
-    -- Options panel: zone tooltip / marker tooltip settings (machine translated, most likely requires a proper human translation)
-    FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP         = "显示区域工具提示";
-    FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "在世界地图左下角显示悬停区域的飞行信息。";
-    FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "显示区域空域范围";
-    FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "在区域工具提示中显示每个区域的推荐空域范围。";
-	FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
-    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "通知：任务栏图标";
-    FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "工具提示字体大小";
-    FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "调整区域工具提示的字体大小。";
-    FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "工具提示最大行数";
-    FLIGHTMAP_OPT_MAX_TOOLTIP_LINES_TIP     = "区域工具提示中显示的最大线条数。";
-    FLIGHTMAP_OPT_SHOW_FM_CONTINENT         = "飞行大师洲际图标。";
-    FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP     = "在洲际地图上显示飞行大师图标。";
-    FLIGHTMAP_OPT_SHOW_FM_CLASS             = "特定类别的飞行大师图标。";
-    FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP         = "显示特定类别的飞行大师图标。";
-    FLIGHTMAP_OPT_SHOW_FM_TOOLTIP           = "飞行大师工具提示。";
-    FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP       = "当鼠标悬停在飞行大师图标上时，显示包含飞行信息的工具提示。";
+-- These constants determine how "Town, Zone" strings look.
+-- SEP_STRING is what separates Town from Zone.  SEP_POSTAMBLE
+-- is anything that is after Zone.
+FLIGHTMAP_SEP_STRING    = "，";
+FLIGHTMAP_SEP_POSTAMBLE = "";
 
-    FLIGHTMAP_SEP_POSTAMBLE = "";
 end

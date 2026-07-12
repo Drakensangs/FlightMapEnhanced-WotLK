@@ -1510,10 +1510,10 @@ FLIGHTMAP_FLIGHTS = {
         ["1:427:748"] = 140.1919999999991, -- Auberdine, Darkshore
         ["1:482:303"] = 461, -- Thalanaar, Feralas
         ["1:497:236"] = 542, -- Marshal's Refuge, Un'Goro Crater
-        ["1:504:651"] = 78, -- Emerald Sanctuary, Felwood
+        ["1:504:651"] = 73.964, -- Emerald Sanctuary, Felwood
         ["1:530:742"] = 206, -- Talonbranch Glade, Felwood
         ["1:552:794"] = 273, -- Moonglade
-        ["1:582:610"] = 134, -- Forest Song, Ashenvale
+        ["1:582:610"] = 126.386, -- Forest Song, Ashenvale
         ["1:583:300"] = 361, -- Mudsprocket, Dustwallow Marsh
         ["1:604:190"] = 438, -- Gadgetzan, Tanaris
         ["1:605:450"] = 193, -- Ratchet, The Barrens
@@ -1736,7 +1736,7 @@ FLIGHTMAP_FLIGHTS = {
         ["1:530:742"] = 634, -- Talonbranch Glade, Felwood
         ["1:552:794"] = 659, -- Moonglade
         ["1:582:610"] = 396, -- Forest Song, Ashenvale
-        ["1:583:300"] = 85, -- Mudsprocket, Dustwallow Marsh
+        ["1:583:300"] = 80.480, -- Mudsprocket, Dustwallow Marsh
         ["1:604:190"] = 171, -- Gadgetzan, Tanaris
         ["1:605:450"] = 252, -- Ratchet, The Barrens
         ["1:610:599"] = 371, -- Talrendis Point, Azshara
@@ -2124,19 +2124,19 @@ FLIGHTMAP_FLIGHTS = {
         ["1:427:748"] = 228, -- Auberdine, Darkshore
         ["1:442:306"] = 495, -- Camp Mojache, Feralas
         ["1:449:438"] = 349, -- Thunder Bluff, Mulgore
-        ["1:462:603"] = 80, -- Astranaar, Ashenvale
+        ["1:462:603"] = 75.611, -- Astranaar, Ashenvale
         ["1:464:695"] = 79, -- Bloodvenom Post, Felwood
         ["1:482:303"] = 534, -- Thalanaar, Feralas
         ["1:497:236"] = 615, -- Marshal's Refuge, Un'Goro Crater
         ["1:528:389"] = 316, -- Camp Taurajo, The Barrens
-        ["1:530:742"] = 128, -- Talonbranch Glade, Felwood
+        ["1:530:742"] = 120.417, -- Talonbranch Glade, Felwood
         ["1:537:794"] = 244, -- Moonglade
         ["1:549:265"] = 427, -- Freewind Post, Thousand Needles
         ["1:552:794"] = 195, -- Moonglade
         ["1:554:582"] = 83, -- Splintertree Post, Ashenvale
         ["1:557:469"] = 243, -- Crossroads, The Barrens
         ["1:567:358"] = 376, -- Brackenwall Village, Dustwallow Marsh
-        ["1:582:610"] = 103, -- Forest Song, Ashenvale
+        ["1:582:610"] = 97.382, -- Forest Song, Ashenvale
         ["1:583:300"] = 434, -- Mudsprocket, Dustwallow Marsh
         ["1:604:190"] = 511, -- Gadgetzan, Tanaris
         ["1:605:450"] = 266, -- Ratchet, The Barrens
@@ -2480,7 +2480,7 @@ FLIGHTMAP_FLIGHTS = {
         ["1:462:603"] = 209, -- Astranaar, Ashenvale
         ["1:482:303"] = 663, -- Thalanaar, Feralas
         ["1:497:236"] = 744, -- Marshal's Refuge, Un'Goro Crater
-        ["1:504:651"] = 129, -- Emerald Sanctuary, Felwood
+        ["1:504:651"] = 121.594, -- Emerald Sanctuary, Felwood
         ["1:552:794"] = 67, -- Moonglade
         ["1:582:610"] = 232, -- Forest Song, Ashenvale
         ["1:583:300"] = 563, -- Mudsprocket, Dustwallow Marsh
@@ -3354,10 +3354,10 @@ FLIGHTMAP_FLIGHTS = {
         ["1:416:842"] = 373, -- Rut'theran Village, Teldrassil
         ["1:418:209"] = 605, -- Cenarion Hold, Silithus
         ["1:427:748"] = 289, -- Auberdine, Darkshore
-        ["1:462:603"] = 141, -- Astranaar, Ashenvale
+        ["1:462:603"] = 133.199, -- Astranaar, Ashenvale
         ["1:482:303"] = 431, -- Thalanaar, Feralas
         ["1:497:236"] = 512, -- Marshal's Refuge, Un'Goro Crater
-        ["1:504:651"] = 110, -- Emerald Sanctuary, Felwood
+        ["1:504:651"] = 104.080, -- Emerald Sanctuary, Felwood
         ["1:530:742"] = 238, -- Talonbranch Glade, Felwood
         ["1:552:794"] = 305, -- Moonglade
         ["1:583:300"] = 331, -- Mudsprocket, Dustwallow Marsh
@@ -3487,7 +3487,7 @@ FLIGHTMAP_FLIGHTS = {
         ["1:449:438"] = 226, -- Thunder Bluff, Mulgore
         ["1:462:603"] = 364, -- Astranaar, Ashenvale
         ["1:464:695"] = 444, -- Bloodvenom Post, Felwood
-        ["1:482:303"] = 105, -- Thalanaar, Feralas
+        ["1:482:303"] = 99.130, -- Thalanaar, Feralas
         ["1:497:236"] = 313, -- Marshal's Refuge, Un'Goro Crater
         ["1:504:651"] = 421, -- Emerald Sanctuary, Felwood
         ["1:528:389"] = 112, -- Camp Taurajo, The Barrens
@@ -3505,7 +3505,7 @@ FLIGHTMAP_FLIGHTS = {
         ["1:610:599"] = 286, -- Talrendis Point, Azshara
         ["1:628:556"] = 252, -- Orgrimmar, Durotar
         ["1:631:638"] = 347, -- Valormok, Azshara
-        ["1:636:330"] = 52, -- Theramore, Dustwallow Marsh
+        ["1:636:330"] = 48.941, -- Theramore, Dustwallow Marsh
         ["1:640:767"] = 477, -- Everlook, Winterspring
         ["1:645:766"] = 464, -- Everlook, Winterspring
         },
@@ -4500,7 +4500,7 @@ FLIGHTMAP_FLIGHTS = {
         ["1:530:742"] = 497, -- Talonbranch Glade, Felwood
         ["1:552:794"] = 522, -- Moonglade
         ["1:582:610"] = 259, -- Forest Song, Ashenvale
-        ["1:583:300"] = 63, -- Mudsprocket, Dustwallow Marsh
+        ["1:583:300"] = 59.938, -- Mudsprocket, Dustwallow Marsh
         ["1:604:190"] = 157, -- Gadgetzan, Tanaris
         ["1:605:450"] = 115, -- Ratchet, The Barrens
         ["1:610:599"] = 234, -- Talrendis Point, Azshara
@@ -4993,7 +4993,7 @@ FLIGHTMAP_FLIGHTS = {
         ["Flights"] = {
         ["2:409:266"] = 81, -- Stormwind, Elwynn
         ["2:409:71"] = 185, -- Booty Bay, Stranglethorn
-        ["2:433:180"] = 62, -- Rebel Camp, Stranglethorn Vale
+        ["2:433:180"] = 58.523, -- Rebel Camp, Stranglethorn Vale
         ["2:443:549"] = 517, -- Southshore, Hillsbrad
         ["2:453:442"] = 416, -- Menethil Harbor, Wetlands
         ["2:466:346"] = 219, -- Thorium Point, Searing Gorge
@@ -5267,7 +5267,7 @@ FLIGHTMAP_FLIGHTS = {
         ["Flights"] = {
         ["2:390:204"] = 74, -- Sentinel Hill, Westfall
         ["2:409:71"] = 199, -- Booty Bay, Stranglethorn
-        ["2:433:180"] = 92, -- Rebel Camp, Stranglethorn Vale
+        ["2:433:180"] = 86.980, -- Rebel Camp, Stranglethorn Vale
         ["2:443:549"] = 431, -- Southshore, Hillsbrad
         ["2:453:442"] = 330, -- Menethil Harbor, Wetlands
         ["2:466:346"] = 133, -- Thorium Point, Searing Gorge
@@ -5275,7 +5275,7 @@ FLIGHTMAP_FLIGHTS = {
         ["2:469:208"] = 116, -- Darkshire, Duskwood
         ["2:475:606"] = 473, -- Chillwind Camp, Western Plaguelands
         ["2:495:583"] = 456, -- Aerie Peak, The Hinterlands
-        ["2:503:246"] = 106.3799999999974, -- Lakeshire, Redridge
+        ["2:503:246"] = 106.380, -- Lakeshire, Redridge
         ["2:513:530"] = 384, -- Refuge Pointe, Arathi
         ["2:514:641"] = 523, -- Thondoril River, Western Plaguelands
         ["2:521:283"] = 153, -- Morgan's Vigil, Burning Steppes
@@ -5372,7 +5372,7 @@ FLIGHTMAP_FLIGHTS = {
         ["Flights"] = {
         ["2:390:204"] = 147, -- Sentinel Hill, Westfall
         ["2:409:266"] = 199, -- Stormwind, Elwynn
-        ["2:433:180"] = 117, -- Rebel Camp, Stranglethorn Vale
+        ["2:433:180"] = 110.870, -- Rebel Camp, Stranglethorn Vale
         ["2:443:549"] = 630, -- Southshore, Hillsbrad
         ["2:453:442"] = 529, -- Menethil Harbor, Wetlands
         ["2:466:346"] = 332, -- Thorium Point, Searing Gorge
@@ -5748,9 +5748,9 @@ FLIGHTMAP_FLIGHTS = {
             ["Zone"] = { ["x"] = 0.382, ["y"] = 0.04 },
         },
         ["Flights"] = {
-        ["2:390:204"] = 66, -- Sentinel Hill, Westfall
-        ["2:409:266"] = 98, -- Stormwind, Elwynn
-        ["2:409:71"] = 115, -- Booty Bay, Stranglethorn
+        ["2:390:204"] = 62.431, -- Sentinel Hill, Westfall
+        ["2:409:266"] = 91.769, -- Stormwind, Elwynn
+        ["2:409:71"] = 108.786, -- Booty Bay, Stranglethorn
         ["2:443:549"] = 529, -- Southshore, Hillsbrad
         ["2:453:442"] = 428, -- Menethil Harbor, Wetlands
         ["2:466:346"] = 231, -- Thorium Point, Searing Gorge
@@ -5821,8 +5821,8 @@ FLIGHTMAP_FLIGHTS = {
                 "2:495:583", -- [3]
             },
             ["2:503:246"] = {
-                "2:469:208", -- [1]
-                "2:503:246", -- [2]
+				"2:469:208", -- [1]
+				"2:503:246", -- [2]
             },
             ["2:513:530"] = {
                 "2:409:266", -- [1]
@@ -5837,9 +5837,9 @@ FLIGHTMAP_FLIGHTS = {
                 "2:514:641", -- [4]
             },
             ["2:521:283"] = {
-                "2:469:208", -- [1]
-                "2:503:246", -- [2]
-                "2:521:283", -- [3]
+				"2:469:208", -- [1]
+				"2:503:246", -- [2]
+				"2:521:283", -- [3]
             },
             ["2:527:385"] = {
                 "2:409:266", -- [1]
@@ -25858,7 +25858,7 @@ FLIGHTMAP_FLIGHTS = {
         ["4:835:412"] = 114, -- Camp Winterhoof, Howling Fjord
         ["4:844:492"] = 161, -- Camp Oneqwah, Grizzly Hills
         ["4:845:267"] = 63, -- New Agamand, Howling Fjord
-        ["4:875:278"] = 80, -- Valgarde Port, Howling Fjord
+        ["4:875:278"] = 75.832, -- Valgarde Port, Howling Fjord
         ["4:877:400"] = 114, -- Fort Wildervar, Howling Fjord
         ["4:951:365"] = 143, -- Vengeance Landing, Howling Fjord
         },
@@ -26532,7 +26532,7 @@ FLIGHTMAP_FLIGHTS = {
         ["4:784:614"] = 212, -- Zim'Torga, Zul'Drak
         ["4:818:687"] = 262, -- Gundrak, Zul'Drak
         ["4:826:537"] = 159, -- Westfall Brigade, Grizzly Hills
-        ["4:875:278"] = 69, -- Valgarde Port, Howling Fjord
+        ["4:875:278"] = 65.064, -- Valgarde Port, Howling Fjord
         ["4:877:400"] = 85, -- Fort Wildervar, Howling Fjord
         },
         ["Costs"] = {
@@ -28722,12 +28722,12 @@ FLIGHTMAP_FLIGHTS = {
         ["4:720:713"] = 304, -- Dun Nifflelem, The Storm Peaks
         ["4:724:598"] = 233, -- The Argent Stand, Zul'Drak
         ["4:729:464"] = 145, -- Amberpine Lodge, Grizzly Hills
-        ["4:738:292"] = 95, -- Kamagua, Howling Fjord
-        ["4:764:328"] = 69, -- Westguard Keep, Howling Fjord
+        ["4:738:292"] = 89.774, -- Kamagua, Howling Fjord
+        ["4:764:328"] = 65.112, -- Westguard Keep, Howling Fjord
         ["4:784:614"] = 225, -- Zim'Torga, Zul'Drak
         ["4:818:687"] = 275, -- Gundrak, Zul'Drak
         ["4:826:537"] = 157, -- Westfall Brigade, Grizzly Hills
-        ["4:877:400"] = 70, -- Fort Wildervar, Howling Fjord
+        ["4:877:400"] = 66.297, -- Fort Wildervar, Howling Fjord
         },
         ["Costs"] = {
         ["4:121:472"] = 27000,
@@ -29016,7 +29016,7 @@ FLIGHTMAP_FLIGHTS = {
         ["4:784:614"] = 160, -- Zim'Torga, Zul'Drak
         ["4:818:687"] = 210, -- Gundrak, Zul'Drak
         ["4:826:537"] = 97, -- Westfall Brigade, Grizzly Hills
-        ["4:875:278"] = 73, -- Valgarde Port, Howling Fjord
+        ["4:875:278"] = 69.123, -- Valgarde Port, Howling Fjord
         },
         ["Costs"] = {
         ["4:121:472"] = 29000,

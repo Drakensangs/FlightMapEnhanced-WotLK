@@ -1,130 +1,95 @@
 -- German localisation
 
 if (GetLocale() == "deDE") then
-    BINDING_HEADER_FLIGHTMAP = "Flugkarte";
-    BINDING_NAME_FLIGHTMAP   = "Zeige Flugkarte";
 
-    FLIGHTMAP_NAME          = "Flugkarte";
-    FLIGHTMAP_DESCRIPTION   = "Fluglinieninfos auf der Weltkarte";
-    FLIGHTMAP_ALLIANCE      = "Allianz";
-    FLIGHTMAP_HORDE         = "Horde";
-    FLIGHTMAP_CONTESTED     = "Umk\195\164mpft";
-    FLIGHTMAP_NEUTRAL       = "Neutral";
+BINDING_HEADER_FLIGHTMAP = "Flugkarte";
+BINDING_NAME_FLIGHTMAP   = "Zeige Flugkarte";
 
-    -- General strings:
-    FLIGHTMAP_TIMING        = "(Zeitberechnung)";
-    FLIGHTMAP_LEVELS        = "|cff00ff00Zonen-Level: %d - %d|r";
-    FLIGHTMAP_NOFLIGHTS     = "Keine bekannt!";
-    FLIGHTMAP_NOT_KNOWN     = "(Nicht bekannt)";
-    FLIGHTMAP_NO_COST       = "Kostenlos"
-    FLIGHTMAP_MONEY_GOLD    = "g";
-    FLIGHTMAP_MONEY_SILVER  = "s";
-    FLIGHTMAP_MONEY_COPPER  = "k";
-    FLIGHTMAP_FLIGHTTIME    = "Flugzeit: ";
-    FLIGHTMAP_QUICKEST      = "Schnellste Verbindung";
-    FLIGHTMAP_TOTAL_TIME    = "Gesamtdauer";
-    FLIGHTMAP_VIA           = "\195\188ber ";
-    FLIGHTMAP_CONFIRM       = "Bist du sicher dass du nach %s fliegen willst?%s";
-    FLIGHTMAP_CONFIRM_TIME  = " Dieser Flug dauert ";
+FLIGHTMAP_NAME          = "Flugkarte";
+FLIGHTMAP_DESCRIPTION   = "Fluglinieninfos auf der Weltkarte";
+FLIGHTMAP_ALLIANCE      = "Allianz";
+FLIGHTMAP_HORDE         = "Horde";
+FLIGHTMAP_CONTESTED     = "Umkämpft";
+FLIGHTMAP_NEUTRAL       = "Neutral";
 
-    -- Command strings
-    FLIGHTMAP_RESET         = "Zur\195\188cksetzen";
-    FLIGHTMAP_SHOWMAP       = "\195\182ffnen";
-    FLIGHTMAP_LOCKTIMES     = "Sperren";
-    FLIGHTMAP_GETHELP       = "Hilfe";
+-- General strings
+FLIGHTMAP_TIMING        = "(Zeitberechnung)";
+FLIGHTMAP_LEVELS        = "Zonen-Level: %d - %d";
+FLIGHTMAP_NOFLIGHTS     = "Keine bekannt!";
+FLIGHTMAP_NOT_KNOWN     = "(Nicht bekannt)";
+FLIGHTMAP_NO_COST       = "Kostenlos";
+FLIGHTMAP_MONEY_GOLD    = "g";
+FLIGHTMAP_MONEY_SILVER  = "s";
+FLIGHTMAP_MONEY_COPPER  = "k";
+FLIGHTMAP_FLIGHTTIME    = "Flugzeit: ";
+FLIGHTMAP_QUICKEST      = "Schnellste Verbindung";
+FLIGHTMAP_TOTAL_TIME    = "Gesamtdauer";
+FLIGHTMAP_VIA           = "Über ";
+FLIGHTMAP_CONFIRM       = "Bist du sicher dass du nach %s fliegen willst?%s";
+FLIGHTMAP_CONFIRM_TIME  = " Dieser Flug dauert ";
 
-    -- Help text
-    FLIGHTMAP_TIMER_HELP    =
-        "Halte die SHIFT-Taste gedr\195\188ckt und verschiebe die Zeitleiste zum neuanordnen.";
-    FLIGHTMAP_SUBCOMMANDS   = {
-        [FLIGHTMAP_RESET]       = "Setze die Position der Zeitleiste zur\195\188ck",
-        [FLIGHTMAP_SHOWMAP]     = "\195\182ffne de Flugkarte",
-        [FLIGHTMAP_GETHELP]     = "Zeige diesen Text",
-    };
+-- Command strings
+FLIGHTMAP_RESET         = "zurücksetzen";
+FLIGHTMAP_SHOWMAP       = "öffnen";
+FLIGHTMAP_LOCKTIMES     = "sperren";
+FLIGHTMAP_TIMER_HELP    = "Halte die SHIFT-Taste gedrückt und verschiebe die Zeitleiste zum Neuanordnen.";
 
-    -- Locked/unlocked status
-    FLIGHTMAP_TIMESLOCKED   = {
-        [true] = "Flugzeiten werden nicht l\195\164nger aufgezeichnet.",
-        [false] = "Flugzeiten werden nun aufgezeichnet.",
-    };
+-- Option strings
+FLIGHTMAP_OPTIONS_CLOSE = "Schließen";
+FLIGHTMAP_OPTIONS_TITLE = "FlightMap";
 
-    -- Option strings:
-    FLIGHTMAP_OPTIONS_CLOSE = "Schlie\195\159en";
-    FLIGHTMAP_OPTIONS_TITLE = "FlightMap Optionen";
-    FLIGHTMAP_OPTIONS = {};
-    FLIGHTMAP_OPTIONS[1] = {   -- Option 1: flight path lines
-        label = "Flugrouten-Linien",
-        option = "showPaths",
-        tooltip = "Flougrouten auf der Karte mit Linien anzeigen.",
-    };
-    FLIGHTMAP_OPTIONS[2] = {   -- Option 2: extra POI buttons
-        label = "Flugmeister-Symbole",
-        option = "showPOIs",
-        tooltip = "Flugmeister auf der Karte mit Symbolen anzeigen.",
-    };
-    FLIGHTMAP_OPTIONS[3] = {   -- Option 3: Unknown masters
-        label = "Zeige alles Infos",
-        option = "showAllInfo",
-        tooltip = "Alle Infos auf der Weltkarte anzeigen (auch f\195\188r unbesuchte Flugpunkte).",
-    };
-    FLIGHTMAP_OPTIONS[4] = {   -- Option 5: flight timers
-        label = "Restdauer-Anzeige",
-        option = "useTimer",
-        tooltip = "Zeitanzeige im Flugmodus ein-/ausschalten.",
-    };
-    FLIGHTMAP_OPTIONS[5] = {   -- Option 6: Show flight destinations
-        label = "Zeige Zielorte",
-        option = "showDestinations",
-        tooltip = "Zeige Flugziele im Tooltip",
-        children = {7, 8, 9},
-    };
-    FLIGHTMAP_OPTIONS[6] = {   -- Option 7: Show multi-hop destinations
-        label = "Multi-hop einbeziehen",
-        option = "showMultiHop",
-        tooltip = "Zeige multi-hop Ziele in den Tootips",
-    };
-    FLIGHTMAP_OPTIONS[7] = {   -- Option 8: Show flight times
-        label = "Zeige Flugdauer",
-        option = "showTimes",
-        tooltip = "Flugzeiten im Tooltip anzeigen.",
-    };
-    FLIGHTMAP_OPTIONS[8] = {   -- Option 9: Show flight costs
-        label = "Zeige Flugkosten",
-        option = "showCosts",
-        tooltip = "Flugkosten im Tooltip anzeigen.",
-    };
-    FLIGHTMAP_OPTIONS[9] = {   -- Option 10: Taxi window extras
-        label = "Vollst\195\164ndige Flugkarte",
-        option = "fullTaxiMap",
-        tooltip = "Zeige alle Flugpunkte im Flugmeister-Fenster.",
-    };
-    FLIGHTMAP_OPTIONS[10] = {   -- Option 11: Confirm flight destinations
-        label = "Fl\195\188ge best\195\164tigen",
-        option = "confirmFlights",
-        tooltip = "Nachfragen bevor die Fl\195\188ge starten",
-    };
+FLIGHTMAP_OPT_SHOW_PATHS                = "Flugrouten-Linien";
+FLIGHTMAP_OPT_SHOW_PATHS_TIP            = "Zeichnet Linien auf der Weltkarte für Flugrouten.";
+FLIGHTMAP_OPT_SHOW_POIS                 = "Flugmeister-Symbole";
+FLIGHTMAP_OPT_SHOW_POIS_TIP             = "Zeigt zusätzliche Weltkartensymbole für Flugmeister an.";
+FLIGHTMAP_OPT_SHOW_ALL_INFO             = "Zeige alle Infos";
+FLIGHTMAP_OPT_SHOW_ALL_INFO_TIP         = "Zeigt alle Daten an, auch für nicht besuchte Flugmeister.";
+FLIGHTMAP_OPT_USE_TIMER                 = "Restdauer-Anzeige";
+FLIGHTMAP_OPT_USE_TIMER_TIP             = "Aktiviert/deaktiviert die Anzeige der Flugdauer.";
+FLIGHTMAP_OPT_SHOW_DESTINATIONS         = "Zeige Zielorte";
+FLIGHTMAP_OPT_SHOW_DESTINATIONS_TIP     = "Zeigt Flugziele in Tooltips an.";
+FLIGHTMAP_OPT_SHOW_MULTI_HOP            = "Multi-Hop einbeziehen";
+FLIGHTMAP_OPT_SHOW_MULTI_HOP_TIP        = "Zeigt Multi-Hop-Ziele in Tooltips an.";
+FLIGHTMAP_OPT_SHOW_TIMES                = "Zeige Flugdauer";
+FLIGHTMAP_OPT_SHOW_TIMES_TIP            = "Zeigt Flugzeiten in Tooltips an.";
+FLIGHTMAP_OPT_SHOW_COSTS                = "Zeige Flugkosten";
+FLIGHTMAP_OPT_SHOW_COSTS_TIP            = "Zeigt Flugkosten in Tooltips an.";
+FLIGHTMAP_OPT_FULL_TAXI_MAP             = "Vollständige Flugkarte";
+FLIGHTMAP_OPT_FULL_TAXI_MAP_TIP         = "Zeigt das Flugnetz im Flugauswahlfenster an.";
+FLIGHTMAP_OPT_CONFIRM_FLIGHTS           = "Flüge bestätigen";
+FLIGHTMAP_OPT_CONFIRM_FLIGHTS_TIP       = "Fragt vor dem Abflug nach einer Bestätigung.";
+FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP         = "Zonen-Tooltip anzeigen";
+FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Zeigt Fluginformationen für die Zone, über die der Mauszeiger bewegt wird, in der unteren linken Ecke der Weltkarte an.";
+FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Zonen-Levelbereiche anzeigen";
+FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Zeigt den empfohlenen Levelbereich für jede Zone im Zonen-Tooltip an.";
+FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
+FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Benachrichtigung: Taskleistensymbol";
+FLIGHTMAP_OPT_NOTIFY_TASKBAR_TIP        = "Lässt das WoW-Taskleistensymbol blinken, wenn du landest. Erfordert awesome_wotlk (AwesomeCVar).";
+FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Schriftgröße des Tooltips";
+FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Passt die Schriftgröße des Zonen-Tooltips an.";
+FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Maximale Anzahl an Tooltip-Zeilen";
+FLIGHTMAP_OPT_MAX_TOOLTIP_LINES_TIP     = "Maximale Anzahl der im Zonen-Tooltip angezeigten Zeilen.";
+FLIGHTMAP_OPT_SHOW_FM_CONTINENT         = "Flugmeister-Kontinentsymbole";
+FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP     = "Zeigt Flugmeistersymbole auf der Kontinentkarte an.";
+FLIGHTMAP_OPT_SHOW_FM_CLASS             = "Klassenspezifische Flugmeistersymbole";
+FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP         = "Zeigt klassenspezifische Flugmeistersymbole an.";
+FLIGHTMAP_OPT_SHOW_FM_TOOLTIP           = "Flugmeister-Tooltip";
+FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP       = "Zeigt einen Tooltip mit Fluginformationen beim Überfahren eines Flugmeistersymbols an.";
+FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES         = "Flugzeiten sperren";
+FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES_TIP     = "Verhindert, dass das Addon neue oder geänderte Flugdaten in die savedvariables schreibt.";
 
-    -- These constants determine how "Town, Zone" strings look.
-    -- SEP_STRING is what separates Town from Zone.  SEP_POSTAMBLE
-    -- is anything that is after Zone.
-    FLIGHTMAP_SEP_STRING    = ", ";
-    -- Options panel: zone tooltip / marker tooltip settings (machine translated, most likely requires a proper human translation)
-    FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP         = "Zonen-Tooltip anzeigen";
-    FLIGHTMAP_OPT_SHOW_ZONE_TOOLTIP_TIP     = "Fluginformationen für die Zone, über die der Mauszeiger bewegt wird, in der unteren linken Ecke der Weltkarte anzeigen.";
-    FLIGHTMAP_OPT_SHOW_ZONE_LEVELS          = "Zonen-Levelbereiche anzeigen";
-    FLIGHTMAP_OPT_SHOW_ZONE_LEVELS_TIP      = "Empfohlenen Levelbereich für jede Zone im Zonen-Tooltip anzeigen.";
-    FLIGHTMAP_OPT_AWESOME_SEPARATOR         = "awesome_wotlk:";
-    FLIGHTMAP_OPT_NOTIFY_TASKBAR            = "Benachrichtigung: Taskleistensymbol";
-    FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE         = "Schriftgröße des Tooltips";
-    FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP     = "Schriftgröße des Zonen-Tooltips anpassen.";
-    FLIGHTMAP_OPT_MAX_TOOLTIP_LINES         = "Maximale Anzahl an Tooltip-Zeilen";
-    FLIGHTMAP_OPT_MAX_TOOLTIP_LINES_TIP     = "Maximale Anzahl der im Zonen-Tooltip angezeigten Linien.";
-    FLIGHTMAP_OPT_SHOW_FM_CONTINENT         = "Flugmaster-Kontinentsymbole";
-    FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP     = "Flugmastersymbole auf der Kontinentkarte anzeigen.";
-    FLIGHTMAP_OPT_SHOW_FM_CLASS             = "Klassenspezifische Flugmastersymbole";
-    FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP         = "Klassenspezifische Flugmastersymbole anzeigen.";
-    FLIGHTMAP_OPT_SHOW_FM_TOOLTIP           = "Flugmaster-Tooltip";
-    FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP       = "Tooltip mit Fluginformationen beim Überfahren eines Flugmastersymbols anzeigen.";
+-- Minimap button tooltip strings
+FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON       = "Minimap-Schaltfläche";
+FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON_TIP   = "Zeigt eine FlightMap-Schaltfläche auf der Minimap an.";
+FLIGHTMAP_MINIMAP_TIP1                  = "Linksklick zum Öffnen der FlightMap-Optionen.";
+FLIGHTMAP_MINIMAP_TIP2                  = "Rechtsklick gedrückt halten zum Verschieben der Minimap-Schaltfläche.";
+FLIGHTMAP_MINIMAP_TIP3                  = "Strg+Linksklick zum Öffnen der Flugkarte.";
+FLIGHTMAP_MINIMAP_TIP4                  = "Umschalt+Linksklick zum Zurücksetzen der Zeitleisteposition.";
 
-    FLIGHTMAP_SEP_POSTAMBLE = "";
+-- These constants determine how "Town, Zone" strings look.
+-- SEP_STRING is what separates Town from Zone.  SEP_POSTAMBLE
+-- is anything that is after Zone.
+FLIGHTMAP_SEP_STRING    = ", ";
+FLIGHTMAP_SEP_POSTAMBLE = "";
+
 end

@@ -8,9 +8,6 @@
 -- the condition that the licensee accepts all responsibility and liability
 -- for any damage that may arise from the use of this AddOn.
 
--- Version number
-FLIGHTMAP_VERSION   = "3.0-2";
-
 FLIGHTMAP_COLORS = {
     Unknown   = { r = 0.8, g = 0.8, b = 0.8 },
     Hostile   = { r = 0.9, g = 0.2, b = 0.2 },
@@ -139,17 +136,6 @@ local lPlayerFaction = nil;
 
 ------------------ Data access functions ------------------
 
-local function lStripPoint(map, point)
-    for k, v in pairs(map) do
-        if v.Costs then v.Costs[point] = nil; end
-        if v.Flights then v.Flights[point] = nil; end
-    end
-    for k, v in pairs(FlightMapChar.Knowledge) do
-        v[point] = nil;
-    end
-    map[point] = nil;
-end
-
 -- Attempt to move a node to a new taxi map position
 local function lRelocateNode(newkey, name)
     local map = FlightMapUtil.getFlightMap();
@@ -230,21 +216,6 @@ local function lSetDefaultData()
             end
         end
     end
-
-    -- Revision 1.8-2: Delete pre-1.7 data
-    FlightMap.Locs = nil;
-    FlightMap.Times = nil;
-
-    -- Revision 3.0-1: Delete pre-3.0 data
-    if not FlightMap.build or FlightMap.build < 9138 then
-        FlightMap[FLIGHTMAP_HORDE] = nil;
-        FlightMap[FLIGHTMAP_ALLIANCE] = nil;
-        FlightMap.build = 9138;
-    end
-
-    -- Revision 3.0-2: remove Coldarra Ledge and the second Argent Stand
-    lStripPoint(FlightMap[FLIGHTMAP_HORDE] or {}, "4:720:593");
-    lStripPoint(FlightMap[FLIGHTMAP_HORDE] or {}, "4:75:508");
 
     local function lStripDefaults(factionSV)
         if not factionSV then return; end
@@ -528,13 +499,6 @@ local function lLearnTaxiNode()
 end
 
 ------------------ Miscellaneous utility ------------------
-
-local function lAutoDismount()
-    if not FlightMapChar.Opts.autoDismount then return; end
-
-    -- Blizzard does this for me, now
-    -- Dismount();
-end
 
 -- Function to set tooltip font size
 local function lSetTooltipFontSize(tooltip, size)
@@ -1040,14 +1004,9 @@ end
 
 -- /flightmap handler
 function FlightMap_OnSlashCmd(args)
-    local cmd, value = string.match(args, "^(%S+)%s*(.*)$")
-    
-    if not cmd then
-        cmd = args
-        value = ""
-    end
-    
-    if cmd == FLIGHTMAP_RESET then 
+    local cmd = string.match(args, "^(%S+)");
+
+    if cmd == FLIGHTMAP_RESET then
         -- Reset the flight timer window's position to the default from Defaults.lua
         local def = FLIGHTMAP_DEFAULT_OPTS.timerPos;
         FlightMapTimesFrame:ClearAllPoints();
@@ -1062,11 +1021,7 @@ function FlightMap_OnSlashCmd(args)
             FLIGHTMAP_TIMESLOCKED[FlightMapChar.Opts.lockFlightTimes],
             1.0, 1.0, 1.0);
     else
-        DEFAULT_CHAT_FRAME:AddMessage("FlightMap Commands:", 1.0, 1.0, 0.0)
-        for cmd, desc in pairs(FLIGHTMAP_SUBCOMMANDS) do
-            DEFAULT_CHAT_FRAME:AddMessage("|cffcc9010" .. cmd .. "|r " .. desc,
-                1.0, 1.0, 1.0);
-        end
+        InterfaceOptionsFrame_OpenToCategory(InterfaceOptionsFlightMapPanel);
     end
 end
 
@@ -1083,17 +1038,16 @@ function FlightMap_OnLoad(self)
     SLASH_FLIGHTMAP2 = "/flightmap";
     SlashCmdList["FLIGHTMAP"] = FlightMap_OnSlashCmd;
 
-    -- Register for VARIABLES_LOADED to talk to myAddOns
+    -- Register for VARIABLES_LOADED to initialise saved data
     self:RegisterEvent("VARIABLES_LOADED");
 end
 
 function FlightMap_OnEvent(self, event)
     if (event == "TAXIMAP_OPENED") then
-        lAutoDismount();
         lLearnTaxiNode();
     elseif (event == "VARIABLES_LOADED") then
         lSetDefaultData();
-
+        FlightMap_UpdateMinimapButton();
     end
 end
 
@@ -1128,173 +1082,320 @@ function FlightMapOptionsFrame_OnLoad(self)
     local fmTooltipBox = nil;
     local fmContinentBox = nil;
     local fmClassBox = nil;
-
-    -- Boxes that need to be greyed when "Show destinations" is off
     local fmDestChildBoxes = {};
 
-    for optid = 1, #FLIGHTMAP_OPTIONS do
-        local option = FLIGHTMAP_OPTIONS[optid];
-        if option then
-            optionCount = optionCount + 1;
-
-            -- Create a checkbox
-            local box = CreateFrame("CheckButton", base .. "Option" .. optid,
-                    parent, "InterfaceOptionsCheckButtonTemplate");
-            box.type = CONTROLTYPE_CHECKBOX;
-            box.label = "option" .. optid;
-            box.setFunc = function(value)
-                if value == "0" then value = false end
-                FlightMapChar.Opts[option.option] = value;
-                if option.option == "showPOIs" and fmTooltipBox then
-                    if value then
-                        fmContinentBox:Enable();
-                        getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(
-                            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                        fmClassBox:Enable();
-                        getglobal(fmClassBox:GetName() .. "Text"):SetTextColor(
-                            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                        fmTooltipBox:Enable();
-                        getglobal(fmTooltipBox:GetName() .. "Text"):SetTextColor(
-                            NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                    else
-                        fmContinentBox:Disable();
-                        getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(
-                            GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-                        fmClassBox:Disable();
-                        getglobal(fmClassBox:GetName() .. "Text"):SetTextColor(
-                            GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-                        fmTooltipBox:Disable();
-                        getglobal(fmTooltipBox:GetName() .. "Text"):SetTextColor(
-                            GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-                    end
-                end
-                -- Grey out "Show destinations" children (multi-hop, times, costs)
-                if option.option == "showDestinations" then
-                    for _, cb in pairs(fmDestChildBoxes) do
-                        if value then
-                            cb:Enable();
-                            getglobal(cb:GetName() .. "Text"):SetTextColor(
-                                NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                        else
-                            cb:Disable();
-                            getglobal(cb:GetName() .. "Text"):SetTextColor(
-                                GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-                        end
-                    end
-                end
+    -- Helper to create a checkbox using OptionsCheckButtonTemplate with our own OnClick
+    local function lCreateCheckBox(name, parentFrame)
+        local cb = CreateFrame("CheckButton", name, parentFrame, "OptionsCheckButtonTemplate");
+        cb:SetScript("OnClick", function(self)
+            if self:GetChecked() then
+                PlaySound("igMainMenuOptionCheckBoxOn");
+                if self.setFunc then self.setFunc("1") end
+            else
+                PlaySound("igMainMenuOptionCheckBoxOff");
+                if self.setFunc then self.setFunc("0") end
             end
-            box.GetValue = function() return (FlightMapChar.Opts[option.option] and "1" or "0") end
-
-            -- Deal with indenting children
-            local left = -2;
-            for _, child in pairs(option.children or {}) do
-                children[child] = 1;
+        end);
+        cb:SetScript("OnEnter", function(self)
+            local opt = self.label and options[self.label];
+            if opt and opt.tooltip then
+                GameTooltip_SetDefaultAnchor(GameTooltip, self);
+                GameTooltip:SetText(opt.tooltip, nil, nil, nil, nil, true);
+                GameTooltip:Show();
             end
-            if children[optid] then left = 13 end
-
-            -- Add anchor
-            box:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
-                    left, 30 - 30 * optionCount);
-
-            -- Store for later use
-            option.control = box;
-            -- Register boxes that are children of "Show destinations" (options 6, 7, 8)
-            if optid == 6 or optid == 7 or optid == 8 then
-                table.insert(fmDestChildBoxes, box);
-            end
-            options["option" .. optid] = {
-                text = option.label,
-                tooltip = option.tooltip,
-                default = nil,
-            };
-            -- Apply yellow (NORMAL_FONT_COLOR) to the checkbox label text
-            getglobal(box:GetName() .. "Text"):SetTextColor(
-                NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-
-            if optid == 2 then
-                optionCount = optionCount + 1;
-                fmContinentBox = CreateFrame("CheckButton", base .. "FMContinent",
-                        parent, "InterfaceOptionsCheckButtonTemplate");
-                fmContinentBox.type = CONTROLTYPE_CHECKBOX;
-                fmContinentBox.label = "fmContinent";
-                fmContinentBox.setFunc = function(value)
-                    if value == "0" then value = false end
-                    FlightMapChar.Opts.showContinentPOIs = value;
-                end
-                fmContinentBox.GetValue = function()
-                    return (FlightMapChar.Opts.showContinentPOIs and "1" or "0");
-                end
-                fmContinentBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
-                        13, 30 - 30 * optionCount);
-                getglobal(fmContinentBox:GetName() .. "Text"):SetText(
-                    FLIGHTMAP_OPT_SHOW_FM_CONTINENT or "Flight master continent icons");
-                getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(
-                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                options["fmContinent"] = {
-                    text = FLIGHTMAP_OPT_SHOW_FM_CONTINENT or "Flight master continent icons",
-                    tooltip = FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP or
-                        "Show flight master icons on the continent map.",
-                    default = true,
-                };
-
-                optionCount = optionCount + 1;
-                fmClassBox = CreateFrame("CheckButton", base .. "FMClass",
-                        parent, "InterfaceOptionsCheckButtonTemplate");
-                fmClassBox.type = CONTROLTYPE_CHECKBOX;
-                fmClassBox.label = "fmClass";
-                fmClassBox.setFunc = function(value)
-                    if value == "0" then value = false end
-                    FlightMapChar.Opts.showClassPOIs = value;
-                end
-                fmClassBox.GetValue = function()
-                    return (FlightMapChar.Opts.showClassPOIs and "1" or "0");
-                end
-                fmClassBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
-                        13, 30 - 30 * optionCount);
-                getglobal(fmClassBox:GetName() .. "Text"):SetText(
-                    FLIGHTMAP_OPT_SHOW_FM_CLASS or "Class specific flight master icons");
-                getglobal(fmClassBox:GetName() .. "Text"):SetTextColor(
-                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                options["fmClass"] = {
-                    text = FLIGHTMAP_OPT_SHOW_FM_CLASS or "Class specific flight master icons",
-                    tooltip = FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP or
-                        "Show flight master icons for class-specific flight hubs (e.g. Druid, Death Knight).",
-                    default = true,
-                };
-
-                optionCount = optionCount + 1;
-                fmTooltipBox = CreateFrame("CheckButton", base .. "FMTooltip",
-                        parent, "InterfaceOptionsCheckButtonTemplate");
-                fmTooltipBox.type = CONTROLTYPE_CHECKBOX;
-                fmTooltipBox.label = "fmTooltip";
-                fmTooltipBox.setFunc = function(value)
-                    if value == "0" then value = false end
-                    FlightMapChar.Opts.showFlightMasterTooltip = value;
-                end
-                fmTooltipBox.GetValue = function()
-                    return (FlightMapChar.Opts.showFlightMasterTooltip and "1" or "0");
-                end
-                fmTooltipBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
-                        13, 30 - 30 * optionCount);
-                getglobal(fmTooltipBox:GetName() .. "Text"):SetText(
-                    FLIGHTMAP_OPT_SHOW_FM_TOOLTIP or "Flight master tooltip");
-                getglobal(fmTooltipBox:GetName() .. "Text"):SetTextColor(
-                    NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-                options["fmTooltip"] = {
-                    text = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP or "Flight master tooltip",
-                    tooltip = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP or
-                        "Show a tooltip with flight information when hovering over a flight master icon.",
-                    default = false,
-                };
-            end
-        end
+        end);
+        cb:SetScript("OnLeave", function(self)
+            GameTooltip:Hide();
+        end);
+        return cb;
     end
 
+    -- Option: Flight path lines
+    optionCount = optionCount + 1;
+    local showPathsBox = lCreateCheckBox(base .. "ShowPaths", parent);
+    showPathsBox.type = CONTROLTYPE_CHECKBOX;
+    showPathsBox.label = "showPaths";
+    showPathsBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showPaths = value;
+    end
+    showPathsBox.GetValue = function()
+        return (FlightMapChar.Opts.showPaths and "1" or "0");
+    end
+    showPathsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(showPathsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_PATHS);
+    getglobal(showPathsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showPaths"] = {
+        text = FLIGHTMAP_OPT_SHOW_PATHS, tooltip = FLIGHTMAP_OPT_SHOW_PATHS_TIP, default = true,
+    };
+
+    -- Option: Flight master icons
+    optionCount = optionCount + 1;
+    local showPOIsBox = lCreateCheckBox(base .. "ShowPOIs", parent);
+    showPOIsBox.type = CONTROLTYPE_CHECKBOX;
+    showPOIsBox.label = "showPOIs";
+    showPOIsBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showPOIs = value;
+        local enable = value and true or false;
+        local color = enable and NORMAL_FONT_COLOR or GRAY_FONT_COLOR;
+        if enable then
+            fmContinentBox:Enable(); fmClassBox:Enable(); fmTooltipBox:Enable();
+        else
+            fmContinentBox:Disable(); fmClassBox:Disable(); fmTooltipBox:Disable();
+        end
+        getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(color.r, color.g, color.b);
+        getglobal(fmClassBox:GetName()     .. "Text"):SetTextColor(color.r, color.g, color.b);
+        getglobal(fmTooltipBox:GetName()   .. "Text"):SetTextColor(color.r, color.g, color.b);
+    end
+    showPOIsBox.GetValue = function()
+        return (FlightMapChar.Opts.showPOIs and "1" or "0");
+    end
+    showPOIsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(showPOIsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_POIS);
+    getglobal(showPOIsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showPOIs"] = {
+        text = FLIGHTMAP_OPT_SHOW_POIS, tooltip = FLIGHTMAP_OPT_SHOW_POIS_TIP, default = true,
+    };
+
+    -- Option: Flight master continent icons (child of showPOIs)
+    optionCount = optionCount + 1;
+    fmContinentBox = lCreateCheckBox(base .. "FMContinent", parent);
+    fmContinentBox.type = CONTROLTYPE_CHECKBOX;
+    fmContinentBox.label = "fmContinent";
+    fmContinentBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showContinentPOIs = value;
+    end
+    fmContinentBox.GetValue = function()
+        return (FlightMapChar.Opts.showContinentPOIs and "1" or "0");
+    end
+    fmContinentBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(fmContinentBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_FM_CONTINENT);
+    getglobal(fmContinentBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["fmContinent"] = {
+        text = FLIGHTMAP_OPT_SHOW_FM_CONTINENT, tooltip = FLIGHTMAP_OPT_SHOW_FM_CONTINENT_TIP, default = true,
+    };
+
+    -- Option: Class specific flight master icons (child of showPOIs)
+    optionCount = optionCount + 1;
+    fmClassBox = lCreateCheckBox(base .. "FMClass", parent);
+    fmClassBox.type = CONTROLTYPE_CHECKBOX;
+    fmClassBox.label = "fmClass";
+    fmClassBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showClassPOIs = value;
+    end
+    fmClassBox.GetValue = function()
+        return (FlightMapChar.Opts.showClassPOIs and "1" or "0");
+    end
+    fmClassBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(fmClassBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_FM_CLASS);
+    getglobal(fmClassBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["fmClass"] = {
+        text = FLIGHTMAP_OPT_SHOW_FM_CLASS, tooltip = FLIGHTMAP_OPT_SHOW_FM_CLASS_TIP, default = true,
+    };
+
+    -- Option: Flight master tooltip (child of showPOIs)
+    optionCount = optionCount + 1;
+    fmTooltipBox = lCreateCheckBox(base .. "FMTooltip", parent);
+    fmTooltipBox.type = CONTROLTYPE_CHECKBOX;
+    fmTooltipBox.label = "fmTooltip";
+    fmTooltipBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showFlightMasterTooltip = value;
+    end
+    fmTooltipBox.GetValue = function()
+        return (FlightMapChar.Opts.showFlightMasterTooltip and "1" or "0");
+    end
+    fmTooltipBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(fmTooltipBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_FM_TOOLTIP);
+    getglobal(fmTooltipBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["fmTooltip"] = {
+        text = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP, tooltip = FLIGHTMAP_OPT_SHOW_FM_TOOLTIP_TIP, default = false,
+    };
+
+    -- Option: Show unknown flights
+    optionCount = optionCount + 1;
+    local showAllInfoBox = lCreateCheckBox(base .. "ShowAllInfo", parent);
+    showAllInfoBox.type = CONTROLTYPE_CHECKBOX;
+    showAllInfoBox.label = "showAllInfo";
+    showAllInfoBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showAllInfo = value;
+    end
+    showAllInfoBox.GetValue = function()
+        return (FlightMapChar.Opts.showAllInfo and "1" or "0");
+    end
+    showAllInfoBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(showAllInfoBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_ALL_INFO);
+    getglobal(showAllInfoBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showAllInfo"] = {
+        text = FLIGHTMAP_OPT_SHOW_ALL_INFO, tooltip = FLIGHTMAP_OPT_SHOW_ALL_INFO_TIP, default = false,
+    };
+
+    -- Option: In-flight timers
+    optionCount = optionCount + 1;
+    local useTimerBox = lCreateCheckBox(base .. "UseTimer", parent);
+    useTimerBox.type = CONTROLTYPE_CHECKBOX;
+    useTimerBox.label = "useTimer";
+    useTimerBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.useTimer = value;
+    end
+    useTimerBox.GetValue = function()
+        return (FlightMapChar.Opts.useTimer and "1" or "0");
+    end
+    useTimerBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(useTimerBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_USE_TIMER);
+    getglobal(useTimerBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["useTimer"] = {
+        text = FLIGHTMAP_OPT_USE_TIMER, tooltip = FLIGHTMAP_OPT_USE_TIMER_TIP, default = true,
+    };
+
+    -- Option: Show destinations
+    optionCount = optionCount + 1;
+    local showDestinationsBox = lCreateCheckBox(base .. "ShowDestinations", parent);
+    showDestinationsBox.type = CONTROLTYPE_CHECKBOX;
+    showDestinationsBox.label = "showDestinations";
+    showDestinationsBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showDestinations = value;
+        local color = value and NORMAL_FONT_COLOR or GRAY_FONT_COLOR;
+        for _, cb in pairs(fmDestChildBoxes) do
+            if value then cb:Enable() else cb:Disable() end
+            getglobal(cb:GetName() .. "Text"):SetTextColor(color.r, color.g, color.b);
+        end
+    end
+    showDestinationsBox.GetValue = function()
+        return (FlightMapChar.Opts.showDestinations and "1" or "0");
+    end
+    showDestinationsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(showDestinationsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_DESTINATIONS);
+    getglobal(showDestinationsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showDestinations"] = {
+        text = FLIGHTMAP_OPT_SHOW_DESTINATIONS, tooltip = FLIGHTMAP_OPT_SHOW_DESTINATIONS_TIP, default = true,
+    };
+
+    -- Option: Including multi-hop (child of showDestinations)
+    optionCount = optionCount + 1;
+    local showMultiHopBox = lCreateCheckBox(base .. "ShowMultiHop", parent);
+    showMultiHopBox.type = CONTROLTYPE_CHECKBOX;
+    showMultiHopBox.label = "showMultiHop";
+    showMultiHopBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showMultiHop = value;
+    end
+    showMultiHopBox.GetValue = function()
+        return (FlightMapChar.Opts.showMultiHop and "1" or "0");
+    end
+    showMultiHopBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(showMultiHopBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_MULTI_HOP);
+    getglobal(showMultiHopBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showMultiHop"] = {
+        text = FLIGHTMAP_OPT_SHOW_MULTI_HOP, tooltip = FLIGHTMAP_OPT_SHOW_MULTI_HOP_TIP, default = true,
+    };
+
+    table.insert(fmDestChildBoxes, showMultiHopBox);
+
+    -- Option: With flight times (child of showDestinations)
+    optionCount = optionCount + 1;
+    local showTimesBox = lCreateCheckBox(base .. "ShowTimes", parent);
+    showTimesBox.type = CONTROLTYPE_CHECKBOX;
+    showTimesBox.label = "showTimes";
+    showTimesBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showTimes = value;
+    end
+    showTimesBox.GetValue = function()
+        return (FlightMapChar.Opts.showTimes and "1" or "0");
+    end
+    showTimesBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(showTimesBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_TIMES);
+    getglobal(showTimesBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showTimes"] = {
+        text = FLIGHTMAP_OPT_SHOW_TIMES, tooltip = FLIGHTMAP_OPT_SHOW_TIMES_TIP, default = true,
+    };
+
+    table.insert(fmDestChildBoxes, showTimesBox);
+
+    -- Option: With flight costs (child of showDestinations)
+    optionCount = optionCount + 1;
+    local showCostsBox = lCreateCheckBox(base .. "ShowCosts", parent);
+    showCostsBox.type = CONTROLTYPE_CHECKBOX;
+    showCostsBox.label = "showCosts";
+    showCostsBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showCosts = value;
+    end
+    showCostsBox.GetValue = function()
+        return (FlightMapChar.Opts.showCosts and "1" or "0");
+    end
+    showCostsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", 13, 30 - 30 * optionCount);
+    getglobal(showCostsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_COSTS);
+    getglobal(showCostsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["showCosts"] = {
+        text = FLIGHTMAP_OPT_SHOW_COSTS, tooltip = FLIGHTMAP_OPT_SHOW_COSTS_TIP, default = true,
+    };
+
+    table.insert(fmDestChildBoxes, showCostsBox);
+
+    -- Option: Enhanced flight window
+    optionCount = optionCount + 1;
+    local fullTaxiMapBox = lCreateCheckBox(base .. "FullTaxiMap", parent);
+    fullTaxiMapBox.type = CONTROLTYPE_CHECKBOX;
+    fullTaxiMapBox.label = "fullTaxiMap";
+    fullTaxiMapBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.fullTaxiMap = value;
+    end
+    fullTaxiMapBox.GetValue = function()
+        return (FlightMapChar.Opts.fullTaxiMap and "1" or "0");
+    end
+    fullTaxiMapBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(fullTaxiMapBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_FULL_TAXI_MAP);
+    getglobal(fullTaxiMapBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["fullTaxiMap"] = {
+        text = FLIGHTMAP_OPT_FULL_TAXI_MAP, tooltip = FLIGHTMAP_OPT_FULL_TAXI_MAP_TIP, default = false,
+    };
+
+    -- Option: Confirm flights
+    optionCount = optionCount + 1;
+    local confirmFlightsBox = lCreateCheckBox(base .. "ConfirmFlights", parent);
+    confirmFlightsBox.type = CONTROLTYPE_CHECKBOX;
+    confirmFlightsBox.label = "confirmFlights";
+    confirmFlightsBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.confirmFlights = value;
+    end
+    confirmFlightsBox.GetValue = function()
+        return (FlightMapChar.Opts.confirmFlights and "1" or "0");
+    end
+    confirmFlightsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT", -2, 30 - 30 * optionCount);
+    getglobal(confirmFlightsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_CONFIRM_FLIGHTS);
+    getglobal(confirmFlightsBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["confirmFlights"] = {
+        text = FLIGHTMAP_OPT_CONFIRM_FLIGHTS, tooltip = FLIGHTMAP_OPT_CONFIRM_FLIGHTS_TIP, default = false,
+    };
+
+    -- Option: Show zone tooltip
     optionCount = optionCount + 1;
     local zoneLevelsBox = nil;  -- forward declaration so zoneTooltipBox can reference it
 
-    local zoneTooltipBox = CreateFrame("CheckButton", base .. "ZoneTooltip",
-            parent, "InterfaceOptionsCheckButtonTemplate");
+    local zoneTooltipBox = lCreateCheckBox(base .. "ZoneTooltip", parent);
     zoneTooltipBox.type = CONTROLTYPE_CHECKBOX;
     zoneTooltipBox.label = "zoneTooltip";
     zoneTooltipBox.setFunc = function(value)
@@ -1302,7 +1403,6 @@ function FlightMapOptionsFrame_OnLoad(self)
         FlightMapChar.Opts.showZoneTooltip = value
         lFM_CurrentZone = nil
         lFM_CurrentArea = nil
-        -- Grey out / enable "Show zone level ranges" child
         if zoneLevelsBox then
             if value then
                 zoneLevelsBox:Enable();
@@ -1329,22 +1429,20 @@ function FlightMapOptionsFrame_OnLoad(self)
         default = true,
     };
 
+    -- Option: Show zone level ranges (child of ZoneTooltip)
     optionCount = optionCount + 1;
-    zoneLevelsBox = CreateFrame("CheckButton", base .. "ZoneLevels",
-            parent, "InterfaceOptionsCheckButtonTemplate");
+    zoneLevelsBox = lCreateCheckBox(base .. "ZoneLevels", parent);
     zoneLevelsBox.type = CONTROLTYPE_CHECKBOX;
     zoneLevelsBox.label = "zoneLevels";
     zoneLevelsBox.setFunc = function(value)
         if value == "0" then value = false end
         FlightMapChar.Opts.showZoneLevels = value
-        -- Force tooltip refresh
         lFM_CurrentZone = nil
         lFM_CurrentArea = nil
     end
     zoneLevelsBox.GetValue = function() 
         return (FlightMapChar.Opts.showZoneLevels and "1" or "0") 
     end
-    -- Indent as child of zoneTooltipBox (left = 13, same as Flight master children)
     zoneLevelsBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
             13, 30 - 30 * optionCount);
     getglobal(zoneLevelsBox:GetName() .. "Text"):SetText(FLIGHTMAP_OPT_SHOW_ZONE_LEVELS);
@@ -1356,6 +1454,56 @@ function FlightMapOptionsFrame_OnLoad(self)
         default = true,
     };
 
+    --  Option: Minimap button
+    optionCount = optionCount + 1;
+    local minimapBox = lCreateCheckBox(base .. "MinimapButton", parent);
+    minimapBox.type = CONTROLTYPE_CHECKBOX;
+    minimapBox.label = "minimapButton";
+    minimapBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.showMinimapButton = value;
+        FlightMap_UpdateMinimapButton();
+    end
+    minimapBox.GetValue = function()
+        return (FlightMapChar.Opts.showMinimapButton and "1" or "0");
+    end
+    minimapBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
+            -2, 30 - 30 * optionCount);
+    getglobal(minimapBox:GetName() .. "Text"):SetText(
+        FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON or "Minimap button");
+    getglobal(minimapBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["minimapButton"] = {
+        text    = FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON or "Minimap button",
+        tooltip = FLIGHTMAP_OPT_SHOW_MINIMAP_BUTTON_TIP or "Show a FlightMap button on the minimap.",
+        default = true,
+    };
+
+    -- Option: Lock flight times
+    optionCount = optionCount + 1;
+    local lockTimesBox = lCreateCheckBox(base .. "LockFlightTimes", parent);
+    lockTimesBox.type = CONTROLTYPE_CHECKBOX;
+    lockTimesBox.label = "lockFlightTimes";
+    lockTimesBox.setFunc = function(value)
+        if value == "0" then value = false end
+        FlightMapChar.Opts.lockFlightTimes = value;
+    end
+    lockTimesBox.GetValue = function()
+        return (FlightMapChar.Opts.lockFlightTimes and "1" or "0");
+    end
+    lockTimesBox:SetPoint("TOPLEFT", referent, "BOTTOMLEFT",
+            -2, 30 - 30 * optionCount);
+    getglobal(lockTimesBox:GetName() .. "Text"):SetText(
+        FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES or "Lock flight times");
+    getglobal(lockTimesBox:GetName() .. "Text"):SetTextColor(
+        NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+    options["lockFlightTimes"] = {
+        text    = FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES or "Lock flight times",
+        tooltip = FLIGHTMAP_OPT_LOCK_FLIGHT_TIMES_TIP or "Prevents the addon from recording new or updated flight times to SavedVariables.",
+        default = false,
+    };
+
+    -- awesome_wotlk separator
     optionCount = optionCount + 1;
     local awesomeSeparator = parent:CreateFontString(
         base .. "AwesomeSeparator", "ARTWORK", "GameFontNormalSmall");
@@ -1364,10 +1512,10 @@ function FlightMapOptionsFrame_OnLoad(self)
     awesomeSeparator:SetText(FLIGHTMAP_OPT_AWESOME_SEPARATOR or "awesome_wotlk:");
     awesomeSeparator:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
 
+    -- Option: Notify: taskbar icon
     optionCount = optionCount + 1;
-    local awesomeLoaded = IsAddOnLoaded and IsAddOnLoaded("AwesomeCVar");
-    local notifyTaskbarBox = CreateFrame("CheckButton", base .. "NotifyTaskbar",
-            parent, "InterfaceOptionsCheckButtonTemplate");
+    local awesomeLoaded = IsAddOnLoaded("AwesomeCVar");
+    local notifyTaskbarBox = lCreateCheckBox(base .. "NotifyTaskbar", parent);
     notifyTaskbarBox.type = CONTROLTYPE_CHECKBOX;
     notifyTaskbarBox.label = "notifyTaskbar";
     notifyTaskbarBox.setFunc = function(value)
@@ -1394,8 +1542,8 @@ function FlightMapOptionsFrame_OnLoad(self)
         tooltip = FLIGHTMAP_OPT_NOTIFY_TASKBAR_TIP,
         default = nil,
     };
-    BlizzardOptionsPanel_RegisterControl(notifyTaskbarBox, panel);
 
+    -- Option: Tooltip font size
     optionCount = optionCount + 1;
     local fontSizeSlider = CreateFrame("Slider", base .. "FontSize",
             parent, "OptionsSliderTemplate");
@@ -1430,7 +1578,7 @@ function FlightMapOptionsFrame_OnLoad(self)
     end);
 
     fontSizeSlider:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+        GameTooltip_SetDefaultAnchor(GameTooltip, self);
         GameTooltip:SetText(FLIGHTMAP_OPT_TOOLTIP_FONT_SIZE_TIP, nil, nil, nil, nil, true);
         GameTooltip:Show();
     end);
@@ -1438,6 +1586,7 @@ function FlightMapOptionsFrame_OnLoad(self)
         GameTooltip:Hide();
     end);
 
+    -- Option: Max tooltip lines
     optionCount = optionCount + 1;
     local maxLinesSlider = CreateFrame("Slider", base .. "MaxLines",
             parent, "OptionsSliderTemplate");
@@ -1477,7 +1626,7 @@ function FlightMapOptionsFrame_OnLoad(self)
     end);
 
     maxLinesSlider:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+        GameTooltip_SetDefaultAnchor(GameTooltip, self);
         GameTooltip:SetText(FLIGHTMAP_OPT_MAX_TOOLTIP_LINES_TIP, nil, nil, nil, nil, true);
         GameTooltip:Show();
     end);
@@ -1485,47 +1634,10 @@ function FlightMapOptionsFrame_OnLoad(self)
         GameTooltip:Hide();
     end);
 
-    for optid, option in pairs(FLIGHTMAP_OPTIONS) do
-        if option.control then
-            BlizzardOptionsPanel_RegisterControl(option.control, panel);
-        end
-    end
-
-    if zoneTooltipBox then
-        BlizzardOptionsPanel_RegisterControl(zoneTooltipBox, panel);
-    end
-
-    if zoneLevelsBox then
-        BlizzardOptionsPanel_RegisterControl(zoneLevelsBox, panel);
-    end
-
-    if fmContinentBox then
-        BlizzardOptionsPanel_RegisterControl(fmContinentBox, panel);
-    end
-
-    if fmClassBox then
-        BlizzardOptionsPanel_RegisterControl(fmClassBox, panel);
-    end
-
-    if fmTooltipBox then
-        BlizzardOptionsPanel_RegisterControl(fmTooltipBox, panel);
-    end
-
-    -- Register all dependencies
-    for optid, option in pairs(FLIGHTMAP_OPTIONS) do
-        for _, child in pairs(option.children or {}) do
-            local other = FLIGHTMAP_OPTIONS[child];
-            if other and other.control then
-                --BlizzardOptionsPanel_SetupDependentControl(other.control,
-                        --option.control)
-            end
-        end
-    end
-
     -- Initialise the options panel
     self.name = FLIGHTMAP_OPTIONS_TITLE;
     self.options = options;
-    InterfaceOptionsPanel_OnLoad(self);
+    InterfaceOptions_AddCategory(self);
 
     panel:SetScript("OnShow", function()
         fontSizeSlider:SetValue(FlightMapChar.Opts.tooltipFontSize or 12);
@@ -1570,7 +1682,112 @@ function FlightMapOptionsFrame_OnLoad(self)
         -- Grey out "Notify: taskbar icon" if AwesomeCVar is not loaded
         if notifyTaskbarBox then
             applyGrayout(notifyTaskbarBox,
-                IsAddOnLoaded and IsAddOnLoaded("AwesomeCVar"));
+                IsAddOnLoaded("AwesomeCVar"));
         end
+
+        -- Sync minimap button checkbox
+        if minimapBox then
+            minimapBox:SetChecked(FlightMapChar.Opts.showMinimapButton and true or false);
+        end
+
+        -- Sync lock flight times checkbox
+        if lockTimesBox then
+            lockTimesBox:SetChecked(FlightMapChar.Opts.lockFlightTimes and true or false);
+        end
+
+        -- Sync all remaining checkboxes
+        showPathsBox:SetChecked(FlightMapChar.Opts.showPaths and true or false);
+        showPOIsBox:SetChecked(FlightMapChar.Opts.showPOIs and true or false);
+        fmContinentBox:SetChecked(FlightMapChar.Opts.showContinentPOIs and true or false);
+        fmClassBox:SetChecked(FlightMapChar.Opts.showClassPOIs and true or false);
+        fmTooltipBox:SetChecked(FlightMapChar.Opts.showFlightMasterTooltip and true or false);
+        showAllInfoBox:SetChecked(FlightMapChar.Opts.showAllInfo and true or false);
+        useTimerBox:SetChecked(FlightMapChar.Opts.useTimer and true or false);
+        showDestinationsBox:SetChecked(FlightMapChar.Opts.showDestinations and true or false);
+        showMultiHopBox:SetChecked(FlightMapChar.Opts.showMultiHop and true or false);
+        showTimesBox:SetChecked(FlightMapChar.Opts.showTimes and true or false);
+        showCostsBox:SetChecked(FlightMapChar.Opts.showCosts and true or false);
+        fullTaxiMapBox:SetChecked(FlightMapChar.Opts.fullTaxiMap and true or false);
+        confirmFlightsBox:SetChecked(FlightMapChar.Opts.confirmFlights and true or false);
+        zoneTooltipBox:SetChecked(FlightMapChar.Opts.showZoneTooltip and true or false);
+        zoneLevelsBox:SetChecked(FlightMapChar.Opts.showZoneLevels and true or false);
+        notifyTaskbarBox:SetChecked(FlightMapChar.Opts.notifyTaskbar and true or false);
     end);
+end
+
+----------------- Minimap Button -----------------
+
+local FLIGHTMAP_MINIMAP_DEFAULT_ANGLE = 225;
+
+local function lUpdateMinimapButtonPosition()
+    local frame = FlightMapMinimapButtonFrame;
+    if not frame then return; end
+    local angle = (FlightMapChar and FlightMapChar.Opts and FlightMapChar.Opts.minimapButtonAngle)
+                  or FLIGHTMAP_MINIMAP_DEFAULT_ANGLE;
+    local rad = math.rad(angle);
+    local radius = 80;
+    frame:ClearAllPoints();
+    frame:SetPoint("CENTER", Minimap, "CENTER",
+        math.cos(rad) * radius, math.sin(rad) * radius);
+end
+
+function FlightMap_UpdateMinimapButton()
+    local frame = FlightMapMinimapButtonFrame;
+    if not frame then return; end
+    if FlightMapChar and FlightMapChar.Opts and FlightMapChar.Opts.showMinimapButton then
+        frame:Show();
+        lUpdateMinimapButtonPosition();
+    else
+        frame:Hide();
+    end
+end
+
+function FlightMapMinimapButton_OnUpdate(self)
+    local mx, my = Minimap:GetCenter();
+    local scale  = Minimap:GetEffectiveScale();
+    local cx, cy = GetCursorPosition();
+    cx = cx / scale;
+    cy = cy / scale;
+    local angle = math.deg(math.atan2(cy - my, cx - mx));
+    self:GetParent():ClearAllPoints();
+    self:GetParent():SetPoint("CENTER", Minimap, "CENTER",
+        math.cos(math.rad(angle)) * 80, math.sin(math.rad(angle)) * 80);
+    if FlightMapChar and FlightMapChar.Opts then
+        FlightMapChar.Opts.minimapButtonAngle = angle;
+    end
+end
+
+function FlightMapMinimapButton_OnMouseDown(self, button)
+    if button == "RightButton" then
+        self:SetScript("OnUpdate", FlightMapMinimapButton_OnUpdate);
+    end
+end
+
+function FlightMapMinimapButton_OnMouseUp(self, button)
+    if button == "RightButton" then
+        self:SetScript("OnUpdate", nil);
+        lUpdateMinimapButtonPosition();
+    elseif button == "LeftButton" then
+        if IsShiftKeyDown() then
+            FlightMap_OnSlashCmd(FLIGHTMAP_RESET);
+        elseif IsControlKeyDown() then
+            FlightMapTaxi_ShowContinent();
+        else
+            InterfaceOptionsFrame_OpenToCategory(InterfaceOptionsFlightMapPanel);
+        end
+    end
+end
+
+function FlightMapMinimapButton_OnEnter(self)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+    GameTooltip:SetText("FlightMap");
+    GameTooltip:AddLine(FLIGHTMAP_MINIMAP_TIP1 or "Left click to open FlightMap options.", 1, 1, 1);
+    GameTooltip:AddLine(FLIGHTMAP_MINIMAP_TIP3 or "Ctrl left click to open flight map.", 1, 1, 1);
+    GameTooltip:AddLine(FLIGHTMAP_MINIMAP_TIP4 or "Shift left click to reset timer bar position.", 1, 1, 1);
+    GameTooltip:AddLine(FLIGHTMAP_MINIMAP_TIP2 or "Hold right click to move minimap button.", 1, 1, 1);
+    GameTooltip:Show();
+end
+
+function FlightMapMinimapButton_OnLeave()
+    GameTooltip:Hide();
 end
