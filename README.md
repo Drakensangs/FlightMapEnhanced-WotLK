@@ -36,3 +36,5 @@ Enhanced version: Drakensangs
 <img width="1911" height="1437" alt="Untitled10" src="https://github.com/user-attachments/assets/609044d8-3fde-420b-a093-f36ce80c675c" />
 <img width="1913" height="1439" alt="Untitled9" src="https://github.com/user-attachments/assets/af55514c-f20c-42d6-b426-6f13f7152cd8" />
 <img width="1914" height="1438" alt="Untitled12" src="https://github.com/user-attachments/assets/4c7a3616-703e-4837-b993-d4edf19772a5" />
+<img width="501" height="633" alt="Fmapgossip" src="https://github.com/user-attachments/assets/c8c608b7-e0a8-4530-a11a-026a728d381e" />
+<img width="500" height="637" alt="Fmapgossip2" src="https://github.com/user-attachments/assets/6dc16576-a8d9-41dd-83da-00e4af338fb1" />
