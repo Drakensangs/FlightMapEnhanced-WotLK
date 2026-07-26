@@ -109,6 +109,18 @@ FlightMapUtil.getFlightMap = function()
         end
     end
 
+    -- Apply per-character costs on top of everything else.
+    local charCosts = FlightMapChar and FlightMapChar.Costs;
+    if charCosts then
+        for nodeKey, costs in pairs(charCosts) do
+            if map[nodeKey] then
+                for dest, cost in pairs(costs) do
+                    map[nodeKey].Costs[dest] = cost;
+                end
+            end
+        end
+    end
+
     lSessionMap[faction] = map;
     return map;
 end

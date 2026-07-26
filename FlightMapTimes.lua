@@ -52,11 +52,14 @@ function FlightMapTimes_SelectGossipOption(index, ...)
         FlightMapTimesRecorderFrame.duration = nil;
         FlightMapTimesRecorderFrame.timeout = GetTime() + 5;
 
-        -- Look for a known time for this flight
-        local map = FlightMap.GossipFlights;
-        if map[unitName] then
-            local duration = map[unitName].Flights[optionTitle];
-            FlightMapTimesRecorderFrame.duration = duration;
+        -- Look for a known time for this flight; SV first, then defaults
+        local svEntry = FlightMap.GossipFlights[unitName];
+        if svEntry then
+            FlightMapTimesRecorderFrame.duration = svEntry.Flights[optionTitle];
+        end
+        if FlightMapTimesRecorderFrame.duration == nil
+        and FLIGHTMAP_GOSSIP_FLIGHTS and FLIGHTMAP_GOSSIP_FLIGHTS[unitName] then
+            FlightMapTimesRecorderFrame.duration = FLIGHTMAP_GOSSIP_FLIGHTS[unitName].Flights[optionTitle];
         end
 
         FlightMapTimesRecorderFrame_Show();
@@ -191,14 +194,18 @@ local function lSaveFlightTime(length, from, to, flightType)
     -- Gossip flights go directly to FlightMap.GossipFlights
     if flightType == 'gossip' then
         local gmap = FlightMap.GossipFlights;
+
+        -- Compare against the shipped default, not the session value.
+        -- Only persist if the recorded time differs from the default by > 1s.
+        local defaultTime = FLIGHTMAP_GOSSIP_FLIGHTS
+                        and FLIGHTMAP_GOSSIP_FLIGHTS[from]
+                        and FLIGHTMAP_GOSSIP_FLIGHTS[from].Flights[to];
+        if defaultTime and math.abs(defaultTime - length) < 1.0 then return; end
+
         if not gmap[from] then
             gmap[from] = { Flights = {} };
         end
-        -- Only write if it differs from the seeded default by > 1s
-        local existing = gmap[from].Flights[to];
-        if not existing or math.abs(existing - length) >= 1.0 then
-            gmap[from].Flights[to] = length;
-        end
+        gmap[from].Flights[to] = length;
         return;
     end
 

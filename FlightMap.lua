@@ -182,6 +182,11 @@ local function lSetDefaultData()
         FlightMapChar.Knowledge = {};
     end
 
+    -- Per-character cost overrides
+    if not FlightMapChar["Costs"] then
+        FlightMapChar.Costs = {};
+    end
+
     -- Default option settings (per-character)
     if not FlightMapChar["Opts"] then
         FlightMapChar["Opts"] = FLIGHTMAP_DEFAULT_OPTS;
@@ -203,18 +208,6 @@ local function lSetDefaultData()
     -- Make sure there's a GossipFlights structure
     if not FlightMap["GossipFlights"] then
         FlightMap["GossipFlights"] = {};
-    end
-    if FLIGHTMAP_GOSSIP_FLIGHTS then
-        for npcName, npcData in pairs(FLIGHTMAP_GOSSIP_FLIGHTS) do
-            if not FlightMap["GossipFlights"][npcName] then
-                FlightMap["GossipFlights"][npcName] = { ["Flights"] = {} };
-            end
-            for option, duration in pairs(npcData["Flights"] or {}) do
-                if not FlightMap["GossipFlights"][npcName]["Flights"][option] then
-                    FlightMap["GossipFlights"][npcName]["Flights"][option] = duration;
-                end
-            end
-        end
     end
 
     local function lStripDefaults(factionSV)
@@ -726,6 +719,13 @@ local function lUpdateTooltip(self, zoneName)
     FlightMapTooltip:SetBackdropColor(0, 0, 0, 0.5);
     FlightMapTooltip:SetBackdropBorderColor(0, 0, 0, 0);
 
+    -- Cartographer Look 'n' Feel compatibility
+    if CartographerLookNFeelOverlayHolder
+    and FlightMapTooltip:GetParent() == CartographerLookNFeelOverlayHolder then
+        FlightMapTooltip:SetParent(UIParent);
+    end
+    FlightMapTooltip:SetFrameStrata("TOOLTIP");
+
     -- Magnify-WotLK
     local tooltipAnchor = (WorldMapScrollFrame and WorldMapScrollFrame:GetScrollChild() == WorldMapDetailFrame)
         and WorldMapScrollFrame
@@ -813,7 +813,15 @@ local function lShowNodePOI(node, data, space, num)
         if not button then return false end
     end
 
-    button:SetFrameStrata("HIGH");
+    -- Keep buttons under FlightMapPathFrame (which inherits strata from
+    -- WorldMapButton → overlayHolder).  Do NOT hardcode a strata: when
+    -- Cartographer_LookNFeel is active, overlayHolder takes WorldMapDetailFrame's
+    -- strata (FULLSCREEN by default) and our buttons must match it to be
+    -- visible.  Frame level +1 above FlightMapPathFrame keeps them above the
+    -- map tiles within that strata.
+    --
+    -- ZoneInfo text ordering is handled separately: see lFixZoneInfoStrata().
+    button:SetParent(FlightMapPathFrame);
     button:SetFrameLevel(FlightMapPathFrame:GetFrameLevel() + 1);
 
     -- Does the user know this flight node?
@@ -839,6 +847,31 @@ local function lShowNodePOI(node, data, space, num)
 end
 
 -- Show locations of flight masters for either continent or zone level maps
+-- Cartographer ZoneInfo strata fix.
+local lFM_AreaFrameFixed = false;
+local function lFixZoneInfoStrata()
+    if not CartographerLookNFeelOverlayHolder then
+        -- Cartographer not active: restore WorldMapFrameAreaFrame to its
+        -- original parent (WorldMapFrame) if we previously moved it.
+        if lFM_AreaFrameFixed and WorldMapFrameAreaFrame then
+            WorldMapFrameAreaFrame:SetParent(WorldMapFrame);
+            lFM_AreaFrameFixed = false;
+        end
+        return;
+    end
+
+    if not WorldMapFrameAreaFrame then return; end
+
+    -- Move WorldMapFrameAreaFrame into overlayHolder so it shares the same
+    -- strata container as our POI buttons.  Set its frame level above the
+    -- highest possible POI button level (FlightMapPathFrame + 1) so it always
+    -- renders on top of the icons.
+    WorldMapFrameAreaFrame:SetParent(CartographerLookNFeelOverlayHolder);
+    local topPOILevel = FlightMapPathFrame:GetFrameLevel() + 2;
+    WorldMapFrameAreaFrame:SetFrameLevel(topPOILevel);
+    lFM_AreaFrameFixed = true;
+end
+
 local function lUpdateFlightPOIs(zoneName)
     local continent = GetCurrentMapContinent();
     local mapZone = GetCurrentMapZone();
@@ -872,6 +905,10 @@ local function lUpdateFlightPOIs(zoneName)
         local but = getglobal("FlightMapPOI" .. i);
         if but then but:Hide() else break end
     end
+
+    -- Ensure ZoneInfo text renders above our POI icons when Cartographer is
+    -- active (see lFixZoneInfoStrata for full explanation).
+    lFixZoneInfoStrata();
 end
 
 -- Draw a line from one flight node to another; returns true if the line
@@ -996,7 +1033,10 @@ function FlightMapPOIButton_OnEnter(self)
 
     lAddFlightsForNode(WorldMapTooltip, self.node, "");
 
+    -- Ensure the flight master tooltip always renders above the zone tooltip
+    -- (FlightMapTooltip) by raising its strata and frame level above it.
     WorldMapTooltip:SetFrameStrata("TOOLTIP");
+    WorldMapTooltip:SetFrameLevel(FlightMapTooltip:GetFrameLevel() + 1);
     WorldMapTooltip:Show();
 end
 
@@ -1033,6 +1073,20 @@ function FlightMap_OnLoad(self)
         FlightMap_WorldMapButton_OnUpdate(...)
     end)
 
+    -- Cartographer Look 'n' Feel compatibility: 
+	-- Hide the zone tooltip when the world map closes
+    local lFM_OldOnHide = WorldMapFrame:GetScript("OnHide") or function() end;
+    WorldMapFrame:SetScript("OnHide", function(this)
+        lFM_OldOnHide(this);
+        FlightMapTooltip:Hide();
+        -- Reset zone tracking so the tooltip redraws correctly on next open.
+        lFM_CurrentZone = nil;
+        lFM_CurrentArea = nil;
+    end);
+
+    -- Annotate gossip buttons with flight times.
+    self:RegisterEvent("GOSSIP_SHOW");
+
     -- Set up my slash command
     SLASH_FLIGHTMAP1 = "/fmap";
     SLASH_FLIGHTMAP2 = "/flightmap";
@@ -1045,6 +1099,37 @@ end
 function FlightMap_OnEvent(self, event)
     if (event == "TAXIMAP_OPENED") then
         lLearnTaxiNode();
+    elseif (event == "GOSSIP_SHOW") then
+        local npcName = UnitName("npc");
+        if not npcName then return; end
+        local entry = FLIGHTMAP_GOSSIP_FLIGHTS
+                  and FLIGHTMAP_GOSSIP_FLIGHTS[npcName];
+        if not entry or not entry.Flights then return; end
+
+        -- Build title→seconds lookup from this page's gossip options.
+        local flightTitles = {};
+        local options = { GetGossipOptions() };
+        local opt = 1;
+        while options[opt] do
+            local title = options[opt];
+            opt = opt + 2;
+            if entry.Flights[title] then
+                flightTitles[title] = entry.Flights[title];
+            end
+        end
+
+        -- Annotate each button whose text matches a known flight title.
+        local i = 1;
+        while true do
+            local btn = getglobal("GossipTitleButton" .. i);
+            if not btn then break; end
+            i = i + 1;
+            local text = btn:GetText() or "";
+            local secs = flightTitles[text];
+            if secs then
+                btn:SetText(text .. " (" .. FlightMapUtil.formatTime(secs) .. ")");
+            end
+        end
     elseif (event == "VARIABLES_LOADED") then
         lSetDefaultData();
         FlightMap_UpdateMinimapButton();
